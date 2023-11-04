@@ -1,0 +1,70 @@
+.navbar {
+  background-color: transparent;
+  padding: 10px 0;
+  position: absolute;
+  width: 100%;
+  z-index: 1;
+}
+
+.navContainer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+.logo {
+  width: 120px;
+  height: auto;
+}
+
+.navItems {
+  display: flex;
+  align-items: center;
+  gap: 25px;
+}
+
+.currencySelect {
+  background-color: transparent;
+  border: none;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.currencySelect:focus {
+  outline: none;
+}
+
+.username {
+  font-size: 16px;
+}
+
+.navButton {
+  background: #3C3789;
+  color: white;
+  font-size: 16px;
+  cursor: pointer;
+  width: 90px;
+  border: none;
+  border-radius: 5px;
+  padding: 6px 1rem;
+  margin-left: 0;
+}
+
+.navButton:hover{
+  background-color: white;
+  color: black;
+}
+
+@media screen and (max-width: 768px) {
+  .logo {
+    margin-bottom: 10px;
+  }
+
+  .navItems {
+    flex-direction: row;
+    gap: 5px;
+  }
+}

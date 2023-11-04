@@ -22,6 +22,7 @@
   align-items: center;
   width: 100px;
   margin: 10px;
+  cursor: pointer;
 }
 
 .crypto-logo img {

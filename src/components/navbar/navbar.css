@@ -6,6 +6,12 @@
   z-index: 1;
 }
 
+.navbar-list {
+  background-color: #d0d0dc;
+  padding: 10px 0;
+  width: 100%;
+}
+
 .navContainer {
   display: flex;
   justify-content: space-between;

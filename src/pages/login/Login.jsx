@@ -4,9 +4,16 @@ import './login.css';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { AuthContext } from '../../context/AuthContext';
+import { IDKitWidget } from '@worldcoin/idkit';
+import { DynamicWidget } from '@dynamic-labs/sdk-react';
+import { useWeb3Modal } from '@web3modal/react';
 
 const Login = () => {
   const { dispatch } = useContext(AuthContext);
+  const { open } = useWeb3Modal();
+  const selectNetwork = () => {
+    open({ route: 'SelectNetwork' });
+  };
   const navigate = useNavigate();
   const formik = useFormik({
     initialValues: {
@@ -74,6 +81,20 @@ const Login = () => {
             Skip without login
           </Link>
         </form>
+        <IDKitWidget
+          actionId="get_this_from_the_dev_portal"
+          signal="my_signal"
+          handleVerify=""
+          enableTelemetry={true}
+          theme={'dark'}
+          onSuccess={(proof) => console.log(proof)}
+          onError={(error) => console.error(error)}
+          debug={true}
+        >
+          {({ open }) => <button onClick={open}>Click me</button>}
+        </IDKitWidget>
+        <button onClick={selectNetwork}>Wallet Connect</button>
+        <DynamicWidget />
       </div>
     </div>
   );

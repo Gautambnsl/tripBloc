@@ -4,58 +4,67 @@ import './index.css';
 import App from './App';
 import { AuthContextProvider } from './context/AuthContext';
 import { SearchContextProvider } from './context/SearchContext';
-import { WagmiConfig, configureChains, createConfig } from 'wagmi';
-import { Web3Modal } from '@web3modal/react';
-import {
-  EthereumClient,
-  w3mConnectors,
-  w3mProvider,
-} from '@web3modal/ethereum';
-import {
-  arbitrum,
-  base,
-  celo,
-  filecoin,
-  mantle,
-  neonMainnet,
-  polygon,
-  scroll,
-  zkSync,
-} from 'viem/chains';
+import { createWeb3Modal, defaultConfig } from '@web3modal/ethers5/react';
+import { LensProvider, development } from '@lens-protocol/react-web';
+import { bindings as wagmiBindings } from '@lens-protocol/wagmi';
 
-const chains = [
-  zkSync,
-  polygon,
-  filecoin,
-  scroll,
-  arbitrum,
-  base,
-  celo,
-  mantle,
-  neonMainnet
-];
-
-// chiliz, aztec, near, cartesi
 const projectId = 'a6c1b0f365aaef1f0617e77730208a3e';
 
-const { publicClient } = configureChains(chains, [w3mProvider({ projectId })]);
-const wagmiConfig = createConfig({
-  autoConnect: true,
-  connectors: w3mConnectors({ projectId, chains }),
-  publicClient,
+const metadata = {
+  name: 'TripBloc',
+  description: 'TripBloc description',
+  url: 'https://mywebsite.com',
+  icons: ['https://avatars.mywebsite.com/'],
+};
+
+const mainnet = {
+	chainId: 1,
+	name: "Ethereum",
+	currency: "ETH",
+	explorerUrl: "https://etherscan.io",
+	rpcUrl: "https://cloudflare-eth.com",
+};
+
+const goril = {
+	chainId: 5,
+	name: "goriel",
+	currency: "ETH",
+	explorerUrl: "https://etherscan.io",
+	rpcUrl: "https://cloudflare-eth.com",
+};
+const chiliz = {
+	chainId: 88882,
+	name: "chiliz spicy testnet",
+	currency: "CHZ",
+	explorerUrl: "https://spicy-explorer.chiliz.com/",
+	rpcUrl: "https://chiliz-spicy.publicnode.com",
+};
+
+createWeb3Modal({
+  ethersConfig: defaultConfig({ metadata }),
+  chains: [
+    mainnet,
+    goril,
+    chiliz
+  ],
+  projectId,
 });
-const ethereumClient = new EthereumClient(wagmiConfig, chains);
+
+const lensConfig = {
+  bindings: wagmiBindings(),
+  environment: development,
+};
+
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <>
-    <WagmiConfig config={wagmiConfig}>
-      <AuthContextProvider>
-        <SearchContextProvider>
-          <App />
-        </SearchContextProvider>
-      </AuthContextProvider>
-      <Web3Modal projectId={projectId} ethereumClient={ethereumClient} />
-    </WagmiConfig>
+   <LensProvider config={lensConfig}>
+    <AuthContextProvider>
+      <SearchContextProvider>
+        <App />
+      </SearchContextProvider>
+    </AuthContextProvider>
+   </LensProvider>
   </>
 );

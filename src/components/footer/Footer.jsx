@@ -12,7 +12,7 @@ const Footer = () => {
     <div className="footer">
       <div className="fLists">
         <div className="fListColumn">
-          <h2 class="fListHeader">Our Services</h2>
+          <h2 className="fListHeader">Our Services</h2>
           <ul className="fList">
             <li className="fListItem">Hotels</li>
             <li className="fListItem">Flights</li>
@@ -20,7 +20,7 @@ const Footer = () => {
           </ul>
         </div>
         <div className="fListColumn">
-          <h2 class="fListHeader">About XcelTrip</h2>
+          <h2 className="fListHeader">About XcelTrip</h2>
           <ul className="fList">
             <li className="fListItem">About Us</li>
             <li className="fListItem">Contact Us</li>
@@ -29,13 +29,13 @@ const Footer = () => {
           </ul>
         </div>
         <div className="fListColumn">
-          <h2 class="fListHeader">Partner with XcelTrip</h2>
+          <h2 className="fListHeader">Partner with XcelTrip</h2>
           <ul className="fList">
             <li className="fListItem">List Your Token</li>
           </ul>
         </div>
         <div className="fListColumn">
-          <h2 class="fListHeader">Connect with us</h2>
+          <h2 className="fListHeader">Connect with us</h2>
           <ul className="socialFList">
             <li className="socialFListItem">
               <a

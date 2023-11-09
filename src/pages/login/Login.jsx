@@ -6,14 +6,21 @@ import * as Yup from 'yup';
 import { AuthContext } from '../../context/AuthContext';
 import { IDKitWidget } from '@worldcoin/idkit';
 import { DynamicWidget } from '@dynamic-labs/sdk-react';
-import { useWeb3Modal } from '@web3modal/react';
+import {
+  useWeb3Modal,
+  useWeb3ModalSigner,
+  useWeb3ModalState,
+} from '@web3modal/ethers5/react';
 
 const Login = () => {
   const { dispatch } = useContext(AuthContext);
   const { open } = useWeb3Modal();
+  const { selectedNetworkId } = useWeb3ModalState();
   const selectNetwork = () => {
-    open({ route: 'SelectNetwork' });
+    open();
+    console.log('selectedNetworkId', selectedNetworkId);
   };
+
   const navigate = useNavigate();
   const formik = useFormik({
     initialValues: {
@@ -42,7 +49,7 @@ const Login = () => {
   return (
     <div className="hackathon-login-container">
       <div className="hackathon-login-box">
-        <h1 className="title">TripBloc Login</h1>
+        {/* <h1 className="title">TripBloc Login</h1>
         <form onSubmit={formik.handleSubmit}>
           <div className="input-field">
             <input
@@ -80,21 +87,19 @@ const Login = () => {
           <Link to="/" className="skip-option">
             Skip without login
           </Link>
-        </form>
-        <IDKitWidget
-          actionId="get_this_from_the_dev_portal"
-          signal="my_signal"
-          handleVerify=""
-          enableTelemetry={true}
-          theme={'dark'}
-          onSuccess={(proof) => console.log(proof)}
-          onError={(error) => console.error(error)}
-          debug={true}
+        </form> */}
+        {/* <IDKitWidget
+          app_id="wid_staging_9f3a190dcfd6bcd9a27f6f88bc31793e" // obtained from the Developer Portal
+          action="vote_1" // this is your action name from the Developer Portal
+          signal="user_value" // any arbitrary value the user is committing to, e.g. a vote
+          onSuccess={() => console.log('success')}
+          credential_types={['orb', 'phone']} // the credentials you want to accept
+          enableTelemetry
         >
-          {({ open }) => <button onClick={open}>Click me</button>}
+          {({ open }) => <button onClick={open}>Verify with World ID</button>}
         </IDKitWidget>
         <button onClick={selectNetwork}>Wallet Connect</button>
-        <DynamicWidget />
+        <DynamicWidget /> */}
       </div>
     </div>
   );

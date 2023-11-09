@@ -7,6 +7,7 @@ import Login from './pages/login/Login';
 import RegisterHotel from './pages/registerHotel/RegisterHotel';
 import { DynamicContextProvider, SortWallets } from '@dynamic-labs/sdk-react';
 import { useState } from 'react';
+import { Toaster } from 'react-hot-toast';
 
 function App() {
   const [alertProps, setAlertProps] = useState({
@@ -60,6 +61,7 @@ function App() {
       }}
     >
       <BrowserRouter>
+      <Toaster position="bottom-left" />
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/hotels" element={<List />} />

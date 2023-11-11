@@ -5,8 +5,6 @@ import App from './App';
 import { AuthContextProvider } from './context/AuthContext';
 import { SearchContextProvider } from './context/SearchContext';
 import { createWeb3Modal, defaultConfig } from '@web3modal/ethers5/react';
-import { LensProvider, development } from '@lens-protocol/react-web';
-import { bindings as wagmiBindings } from '@lens-protocol/wagmi';
 
 const projectId = 'a6c1b0f365aaef1f0617e77730208a3e';
 
@@ -50,21 +48,14 @@ createWeb3Modal({
   projectId,
 });
 
-const lensConfig = {
-  bindings: wagmiBindings(),
-  environment: development,
-};
-
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <>
-   <LensProvider config={lensConfig}>
     <AuthContextProvider>
       <SearchContextProvider>
         <App />
       </SearchContextProvider>
     </AuthContextProvider>
-   </LensProvider>
   </>
 );

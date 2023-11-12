@@ -1,107 +1,91 @@
-import React, { useContext } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import React, { useRef, useState } from 'react';
+import { GateFiDisplayModeEnum, GateFiSDK } from '@gatefi/js-sdk';
 import './login.css';
-import { useFormik } from 'formik';
-import * as Yup from 'yup';
-import { AuthContext } from '../../context/AuthContext';
-import { IDKitWidget } from '@worldcoin/idkit';
-import { DynamicWidget } from '@dynamic-labs/sdk-react';
-import {
-  useWeb3Modal,
-  useWeb3ModalSigner,
-  useWeb3ModalState,
-} from '@web3modal/ethers5/react';
 
 const Login = () => {
-  const { dispatch } = useContext(AuthContext);
-  const { open } = useWeb3Modal();
-  const { selectedNetworkId } = useWeb3ModalState();
-  const selectNetwork = () => {
-    open();
-    console.log('selectedNetworkId', selectedNetworkId);
+  const [showIframe, setShowIframe] = useState(false);
+  const embedInstanceSDK = useRef(null);
+
+  const generateRandomHex = (size) => {
+    let result = '';
+    for (let i = 0; i < size; i++) {
+      result += Math.floor(Math.random() * 16).toString(16);
+    }
+    return result;
   };
 
-  const navigate = useNavigate();
-  const formik = useFormik({
-    initialValues: {
-      email: '',
-      password: '',
-    },
-    validationSchema: Yup.object({
-      email: Yup.string()
-        .matches(/^[^\s@]+@[^\s@]+\.[^\s@]+$/, 'Invalid Email Address')
-        .required('Email Address is Required'),
-      password: Yup.string()
-        .min(8, 'Password must be at least 8 characters')
-        .matches(
-          /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/,
-          'Password must have one uppercase, one lowercase, one number, and one special character'
-        )
-        .required('Password is Required'),
-    }),
-    onSubmit: (values) => {
-      dispatch({ type: 'LOGIN_START' });
-      dispatch({ type: 'LOGIN_SUCCESS', payload: values });
-      navigate('/');
-    },
-  });
+  const createEmbedSdkInstance = () => {
+    const randomString = generateRandomHex(64);
+
+    embedInstanceSDK.current =
+      typeof document !== 'undefined' &&
+      new GateFiSDK({
+        merchantId: '9e34f479-b43a-4372-8bdf-90689e16cd5b',
+        displayMode: GateFiDisplayModeEnum.Embedded,
+        nodeSelector: '#embed-button',
+        isSandbox: true,
+        walletAddress: '0xe8A9c115d575586FC42fD2d046FB7535e06E7c5F',
+        email: 'agujarati.010@gmail.com',
+        externalId: randomString,
+        defaultFiat: {
+          currency: 'USD',
+          amount: '20.51',
+        },
+        defaultCrypto: {
+          currency: 'ETH',
+        },
+      });
+  };
+
+  const handleOnClickEmbed = () => {
+    if (showIframe) {
+      embedInstanceSDK.current?.hide();
+      setShowIframe(false);
+    } else {
+      if (!embedInstanceSDK.current) {
+        createEmbedSdkInstance();
+      }
+      embedInstanceSDK.current?.show();
+      setShowIframe(true);
+    }
+  };
+
+  const handleCloseEmbed = () => {
+    embedInstanceSDK.current?.destroy();
+    embedInstanceSDK.current = null;
+    setShowIframe(false);
+  };
 
   return (
-    <div className="hackathon-login-container">
-      <div className="hackathon-login-box">
-        {/* <h1 className="title">TripBloc Login</h1>
-        <form onSubmit={formik.handleSubmit}>
-          <div className="input-field">
-            <input
-              type="email"
-              id="email"
-              name="email"
-              placeholder="Enter your email"
-              onChange={formik.handleChange}
-              onBlur={formik.handleBlur}
-              value={formik.values.email}
-            />
-            {formik.touched.email && formik.errors.email ? (
-              <div className="error-message">{formik.errors.email}</div>
-            ) : null}
-          </div>
-          <div className="input-field">
-            <div className="input-field">
-              <input
-                type="password"
-                id="password"
-                name="password"
-                placeholder="Enter your password"
-                onChange={formik.handleChange}
-                onBlur={formik.handleBlur}
-                value={formik.values.password}
-              />
-              {formik.touched.password && formik.errors.password ? (
-                <div className="error-message">{formik.errors.password}</div>
-              ) : null}
-            </div>
-          </div>
-          <button type="submit" className="login-btn">
-            Login
-          </button>
-          <Link to="/" className="skip-option">
-            Skip without login
-          </Link>
-        </form> */}
-        {/* <IDKitWidget
-          app_id="wid_staging_9f3a190dcfd6bcd9a27f6f88bc31793e" // obtained from the Developer Portal
-          action="vote_1" // this is your action name from the Developer Portal
-          signal="user_value" // any arbitrary value the user is committing to, e.g. a vote
-          onSuccess={() => console.log('success')}
-          credential_types={['orb', 'phone']} // the credentials you want to accept
-          enableTelemetry
-        >
-          {({ open }) => <button onClick={open}>Verify with World ID</button>}
-        </IDKitWidget>
-        <button onClick={selectNetwork}>Wallet Connect</button>
-        <DynamicWidget /> */}
+    <>
+      <div className="hackathon-login-container">
+        <div className="hackathon-login-box">
+          <button onClick={handleOnClickEmbed}>Embed</button>
+          <div id="embed-button"></div>
+        </div>
       </div>
-    </div>
+      {showIframe && (
+        <button
+          onClick={handleCloseEmbed}
+          style={{
+            position: 'absolute',
+            right: '113px',
+            transform: 'none',
+            top: '10px',
+            background: 'rgba(0, 0, 0, 0.7)',
+            color: '#fff',
+            border: 'none',
+            borderRadius: '5px',
+            padding: '5px 15px',
+            cursor: 'pointer',
+            zIndex: 2000,
+            boxShadow: '0 2px 4px rgba(0,0,0,0.2)',
+          }}
+        >
+          Close
+        </button>
+      )}
+    </>
   );
 };
 

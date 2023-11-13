@@ -164,7 +164,7 @@ const Hotel = () => {
           )}
           <div className={`hotelWrapper ${showIframe ? 'blurCSS' : null}`}>
             <button className="bookNow" onClick={handleOnClickEmbed}>
-              Reserve or Book Now!
+              Buy via Unlimit Crypto
             </button>
             <h1 className="hotelTitle">{mockHotels[0].name}</h1>
             <div className="hotelAddress">

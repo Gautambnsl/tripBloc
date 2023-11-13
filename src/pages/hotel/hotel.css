@@ -14,6 +14,11 @@
     position: relative;
 }
 
+.blurCSS{
+    filter: blur(5px);
+    -webkit-filter: blur(5px);
+}
+
 .bookNow {
     position: absolute;
     top: 10px;

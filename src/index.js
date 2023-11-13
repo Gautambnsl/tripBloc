@@ -30,6 +30,7 @@ const goril = {
   explorerUrl: 'https://etherscan.io',
   rpcUrl: 'https://cloudflare-eth.com',
 };
+
 const chiliz = {
   chainId: 88882,
   name: 'chiliz spicy testnet',
@@ -64,10 +65,10 @@ const arbitrum = {
 
 const base = {
   chainId: 84532,
-  name: 'Base Sepolia Testnet',
+  name: 'Base Goerli Testnet',
   currency: 'ETH',
   explorerUrl: '',
-  rpcUrl: 'https://sepolia.base.org',
+  rpcUrl: 'https://goerli.base.org',
 };
 
 const celo = {

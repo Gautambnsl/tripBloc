@@ -8,83 +8,23 @@ import {
   faCircleXmark,
   faLocationDot,
 } from '@fortawesome/free-solid-svg-icons';
-import { useContext, useState } from 'react';
+import { useRef, useState } from 'react';
 import useFetch from '../../hooks/useFetch';
-import { useLocation, useNavigate } from 'react-router-dom';
-import { SearchContext } from '../../context/SearchContext';
-import { AuthContext } from '../../context/AuthContext';
+import { useLocation } from 'react-router-dom';
+import mockHotels from '../../context/mockHotels';
+import { GateFiDisplayModeEnum, GateFiSDK } from '@gatefi/js-sdk';
+import toast from 'react-hot-toast';
 
 const Hotel = () => {
-  const mockHotels = [
-    {
-      _id: 'hotel1',
-      photos: [
-        'https://images.unsplash.com/photo-1517840901100-8179e982acb7?auto=format&fit=crop&q=60&w=500&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8M3x8aG90ZWx8ZW58MHx8MHx8fDA%3D',
-        'https://plus.unsplash.com/premium_photo-1675745329954-9639d3b74bbf?auto=format&fit=crop&q=60&w=500&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8aG90ZWx8ZW58MHx8MHx8fDA%3D',
-        'https://images.unsplash.com/photo-1496417263034-38ec4f0b665a?auto=format&fit=crop&q=60&w=500&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8N3x8aG90ZWx8ZW58MHx8MHx8fDA%3D',
-      ],
-      name: 'Hotel Sunshine',
-      distance: '500m from city center',
-      description:
-        'This is a delightful hotel offering sunny rooms and wonderful service, close to all the attractions.',
-      rating: 8.5,
-      cheapestPrice: 120,
-      address:'500m from city center',
-      title: 'Mountain Escape'
-    },
-    {
-      _id: 'hotel2',
-      photos: [
-        'https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?auto=format&fit=crop&q=60&w=500&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Nnx8aG90ZWx8ZW58MHx8MHx8fDA%3D',
-        'https://images.unsplash.com/photo-1679678691263-cc7f30ce02f8?auto=format&fit=crop&q=60&w=500&ixlib=rb-4.0.3&ixid=M3wxMjA3fDF8MHxzZWFyY2h8OHx8aG90ZWx8ZW58MHx8MHx8fDA%3D',
-        'https://images.unsplash.com/photo-1618773928121-c32242e63f39?auto=format&fit=crop&q=60&w=500&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTB8fGhvdGVsfGVufDB8fDB8fHww',
-      ],
-      name: 'Oceanview Retreat',
-      distance: '200m from the beach',
-      description:
-        'Experience breathtaking ocean views and relaxing beachside living at our tranquil retreat.',
-      rating: 9.0,
-      cheapestPrice: 150,
-      address:'500m from city center',
-      title: 'Mountain Escape'
-    },
-    {
-      _id: 'hotel3',
-      photos: [
-        'https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&q=60&w=500&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTF8fGhvdGVsfGVufDB8fDB8fHww',
-        'https://images.unsplash.com/photo-1563911302283-d2bc129e7570?auto=format&fit=crop&q=60&w=500&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTR8fGhvdGVsfGVufDB8fDB8fHww',
-        'https://images.unsplash.com/photo-1445019980597-93fa8acb246c?auto=format&fit=crop&q=60&w=500&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTl8fGhvdGVsfGVufDB8fDB8fHww',
-      ],
-      name: 'Mountain Escape',
-      distance: 'Located in the mountain range',
-      description:
-        'Surrounded by mountains, this secluded escape provides the perfect getaway for nature lovers.',
-      rating: 8.7,
-      cheapestPrice: 95,
-      address:'500m from city center',
-      title: 'Mountain Escape'
-    },
-  ];
   const location = useLocation();
   const id = location.pathname.split('/')[2];
   const [slideNumber, setSlideNumber] = useState(0);
   const [open, setOpen] = useState(false);
-  const [openModal, setOpenModal] = useState(false);
+  const [showIframe, setShowIframe] = useState(false);
+  const embedInstanceSDK = useRef(null);
+  const { loading } = useFetch(`/hotels/find/${id}`);
+  const user = JSON.parse(localStorage.getItem('user')) && JSON.parse(localStorage.getItem('user')).email;
 
-  const { data, loading, error } = useFetch(`/hotels/find/${id}`);
-  const { user } = useContext(AuthContext);
-  const navigate = useNavigate();
-
-  const { dates, options } = useContext(SearchContext);
-
-  const MILLISECONDS_PER_DAY = 1000 * 60 * 60 * 24;
-  function dayDifference(date1, date2) {
-    const timeDiff = Math.abs(date2.getTime() - date1.getTime());
-    const diffDays = Math.ceil(timeDiff / MILLISECONDS_PER_DAY);
-    return diffDays;
-  }
-
-  // const days = dayDifference(dates[0].endDate, dates[0].startDate);
   const days = 28;
 
   const handleOpen = (i) => {
@@ -94,25 +34,77 @@ const Hotel = () => {
 
   const handleMove = (direction) => {
     let newSlideNumber;
+    const totalImages = mockHotels[0].photos.length;
 
     if (direction === 'l') {
-      newSlideNumber = slideNumber === 0 ? 5 : slideNumber - 1;
+      newSlideNumber = slideNumber === 0 ? totalImages - 1 : slideNumber - 1;
     } else {
-      newSlideNumber = slideNumber === 5 ? 0 : slideNumber + 1;
+      newSlideNumber = slideNumber === totalImages - 1 ? 0 : slideNumber + 1;
     }
 
     setSlideNumber(newSlideNumber);
   };
 
   const handleClick = () => {
-    if (user) {
-      setOpenModal(true);
-    } else {
-      navigate('/login');
+    if (!user){
+      toast('Please Login !!!', {
+        icon: '👨‍💻',
+      });
     }
   };
+
+  const generateRandomHex = (size) => {
+    let result = '';
+    for (let i = 0; i < size; i++) {
+      result += Math.floor(Math.random() * 16).toString(16);
+    }
+    return result;
+  };
+
+  const createEmbedSdkInstance = () => {
+    const randomString = generateRandomHex(64);
+
+    embedInstanceSDK.current =
+      typeof document !== 'undefined' &&
+      new GateFiSDK({
+        merchantId: '9e34f479-b43a-4372-8bdf-90689e16cd5b',
+        displayMode: GateFiDisplayModeEnum.Embedded,
+        nodeSelector: '#embed-button',
+        isSandbox: true,
+        walletAddress: '0xe8A9c115d575586FC42fD2d046FB7535e06E7c5F',
+        email: 'agujarati.010@gmail.com',
+        externalId: randomString,
+        defaultFiat: {
+          currency: 'USD',
+          amount: '20.51',
+        },
+        defaultCrypto: {
+          currency: 'ETH',
+        },
+      });
+  };
+
+  const handleOnClickEmbed = () => {
+    if (showIframe) {
+      embedInstanceSDK.current?.hide();
+      setShowIframe(false);
+    } else {
+      if (!embedInstanceSDK.current) {
+        createEmbedSdkInstance();
+      }
+      embedInstanceSDK.current?.show();
+      setShowIframe(true);
+    }
+  };
+
+  const handleCloseEmbed = () => {
+    embedInstanceSDK.current?.destroy();
+    embedInstanceSDK.current = null;
+    setShowIframe(false);
+  };
+
   return (
-    < >
+    <>
       <Navbar type="list" />
       <Header type="list" />
       {loading ? (
@@ -133,8 +125,8 @@ const Hotel = () => {
               />
               <div className="sliderWrapper">
                 <img
-                  src="https://images.unsplash.com/photo-1517840901100-8179e982acb7?auto=format&fit=crop&q=60&w=500&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8M3x8aG90ZWx8ZW58MHx8MHx8fDA%3D"
-                  alt=""
+                  src={mockHotels[0].photos[slideNumber]}
+                  alt={`Slide ${slideNumber}`}
                   className="sliderImg"
                 />
               </div>
@@ -145,8 +137,35 @@ const Hotel = () => {
               />
             </div>
           )}
-          <div className="hotelWrapper">
-            <button className="bookNow">Reserve or Book Now!</button>
+          <div
+            id="embed-button"
+            style={{ position: 'absolute', left: '37%', zIndex: '1' }}
+          />
+          {showIframe && (
+            <button
+              onClick={handleCloseEmbed}
+              style={{
+                position: 'absolute',
+                right: '25%',
+                transform: 'none',
+                top: '15%',
+                background: 'rgba(0, 0, 0, 0.7)',
+                color: '#fff',
+                border: 'none',
+                borderRadius: '5px',
+                padding: '5px 15px',
+                cursor: 'pointer',
+                zIndex: 2000,
+                boxShadow: '0 2px 4px rgba(0,0,0,0.2)',
+              }}
+            >
+              Close
+            </button>
+          )}
+          <div className={`hotelWrapper ${showIframe ? 'blurCSS' : null}`}>
+            <button className="bookNow" onClick={handleOnClickEmbed}>
+              Reserve or Book Now!
+            </button>
             <h1 className="hotelTitle">{mockHotels[0].name}</h1>
             <div className="hotelAddress">
               <FontAwesomeIcon icon={faLocationDot} />
@@ -156,8 +175,8 @@ const Hotel = () => {
               Excellent location – {mockHotels[0].distance}m from center
             </span>
             <span className="hotelPriceHighlight">
-              Book a stay over ${mockHotels[0].cheapestPrice} at this property and get a
-              free airport taxi
+              Book a stay over ${mockHotels[0].cheapestPrice} at this property
+              and get a free airport taxi
             </span>
             <div className="hotelImages">
               {mockHotels[0].photos?.map((photo, i) => (
@@ -165,7 +184,7 @@ const Hotel = () => {
                   <img
                     onClick={() => handleOpen(i)}
                     src={photo}
-                    alt=""
+                    alt="Hotel Images"
                     className="hotelImg"
                   />
                 </div>
@@ -183,8 +202,7 @@ const Hotel = () => {
                   excellent location score of 9.8!
                 </span>
                 <h2>
-                  <b>${days * mockHotels[0].cheapestPrice * options.room}</b> ({days}{' '}
-                  nights)
+                  <b>${days * mockHotels[0].cheapestPrice}</b> ({days} nights)
                 </h2>
                 <button onClick={handleClick}>Reserve or Book Now!</button>
               </div>

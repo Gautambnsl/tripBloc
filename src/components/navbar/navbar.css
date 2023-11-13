@@ -55,11 +55,23 @@
   width: 90px;
   border: none;
   border-radius: 5px;
-  padding: 6px 1rem;
+  padding: 10px 1rem;
   margin-left: 0;
 }
 
-.navButton:hover {
+.navButton-connectWallet {
+  background: #3C3789;
+  color: white;
+  font-size: 16px;
+  cursor: pointer;
+  width: 150px;
+  border: none;
+  border-radius: 5px;
+  padding: 10px 1rem;
+  margin-left: 0;
+}
+
+.navButton:hover, .navButton-connectWallet:hover {
   background-color: white;
   color: black;
 }

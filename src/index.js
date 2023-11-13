@@ -16,35 +16,79 @@ const metadata = {
 };
 
 const mainnet = {
-	chainId: 1,
-	name: "Ethereum",
-	currency: "ETH",
-	explorerUrl: "https://etherscan.io",
-	rpcUrl: "https://cloudflare-eth.com",
+  chainId: 1,
+  name: 'Ethereum',
+  currency: 'ETH',
+  explorerUrl: 'https://etherscan.io',
+  rpcUrl: 'https://cloudflare-eth.com',
 };
 
 const goril = {
-	chainId: 5,
-	name: "goriel",
-	currency: "ETH",
-	explorerUrl: "https://etherscan.io",
-	rpcUrl: "https://cloudflare-eth.com",
+  chainId: 5,
+  name: 'goriel',
+  currency: 'ETH',
+  explorerUrl: 'https://etherscan.io',
+  rpcUrl: 'https://cloudflare-eth.com',
 };
 const chiliz = {
-	chainId: 88882,
-	name: "chiliz spicy testnet",
-	currency: "CHZ",
-	explorerUrl: "https://spicy-explorer.chiliz.com/",
-	rpcUrl: "https://chiliz-spicy.publicnode.com",
+  chainId: 88882,
+  name: 'chiliz spicy testnet',
+  currency: 'CHZ',
+  explorerUrl: 'https://spicy-explorer.chiliz.com/',
+  rpcUrl: 'https://chiliz-spicy.publicnode.com',
+};
+
+const polygon = {
+  chainId: 1442,
+  name: 'Polygon zkEVM Testnet',
+  currency: 'ETH',
+  explorerUrl: '',
+  rpcUrl: 'https://rpc.public.zkevm-test.net',
+};
+
+const scroll = {
+  chainId: 534351,
+  name: 'Scroll Sepolia Testnet',
+  currency: 'ETH',
+  explorerUrl: '',
+  rpcUrl: 'https://sepolia-rpc.scroll.io',
+};
+
+const arbitrum = {
+  chainId: 421614,
+  name: 'Arbitrum Sepolia',
+  currency: 'ETH',
+  explorerUrl: '',
+  rpcUrl: 'https://arbitrum-sepolia.blockpi.network/v1/rpc/public',
+};
+
+const base = {
+  chainId: 84532,
+  name: 'Base Sepolia Testnet',
+  currency: 'ETH',
+  explorerUrl: '',
+  rpcUrl: 'https://sepolia.base.org',
+};
+
+const celo = {
+  chainId: 44787,
+  name: 'Celo Alfajores Testnet',
+  currency: 'CELO',
+  explorerUrl: '',
+  rpcUrl: 'https://alfajores-forno.celo-testnet.org',
+};
+
+const mantle = {
+  chainId: 5001,
+  name: 'Mantle Testnet',
+  currency: 'MNT',
+  explorerUrl: '',
+  rpcUrl: 'https://rpc.testnet.mantle.xyz',
 };
 
 createWeb3Modal({
   ethersConfig: defaultConfig({ metadata }),
-  chains: [
-    mainnet,
-    goril,
-    chiliz
-  ],
+  chains: [polygon, scroll,arbitrum,chiliz,base,celo,mantle], //near, cartesi
   projectId,
 });
 

@@ -1,6 +1,6 @@
 .header {
     background-image: linear-gradient(to left, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.6)),
-        url('https://www.xceltrip.com/image/homepage/hotel_bg.webp');
+        url('https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3wzMDk1MTB8MHwxfHNlYXJjaHwxMHx8bW91bnRhaW58ZW58MHx8fHwxNjk5ODY1NTg3fDA&ixlib=rb-4.0.3&q=80&w=1080');
     background-repeat: no-repeat;
     background-position: 0 30%;
     background-size: cover;

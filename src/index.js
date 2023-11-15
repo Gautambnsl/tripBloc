@@ -15,81 +15,72 @@ const metadata = {
   icons: ['https://avatars.mywebsite.com/'],
 };
 
-const mainnet = {
-  chainId: 1,
-  name: 'Ethereum',
-  currency: 'ETH',
-  explorerUrl: 'https://etherscan.io',
-  rpcUrl: 'https://cloudflare-eth.com',
-};
 
-const goril = {
-  chainId: 5,
-  name: 'goriel',
-  currency: 'ETH',
-  explorerUrl: 'https://etherscan.io',
-  rpcUrl: 'https://cloudflare-eth.com',
-};
 
-const chiliz = {
-  chainId: 88882,
-  name: 'chiliz spicy testnet',
-  currency: 'CHZ',
-  explorerUrl: 'https://spicy-explorer.chiliz.com/',
-  rpcUrl: 'https://chiliz-spicy.publicnode.com',
+const zksync = {
+  chainId: 280,
+  name: 'zksync',
+  currency: 'MNT',
+  rpcUrl : 'https://zksync-era-testnet.blockpi.network/v1/rpc/public'
 };
-
-const polygon = {
+const polygonZkEvm = {
   chainId: 1442,
-  name: 'Polygon zkEVM Testnet',
+  name: 'Polygon zkEVM',
   currency: 'ETH',
-  explorerUrl: '',
-  rpcUrl: 'https://rpc.public.zkevm-test.net',
+  rpcUrl : 'https://rpc.public.zkevm-test.net'
 };
-
 const scroll = {
   chainId: 534351,
   name: 'Scroll Sepolia Testnet',
   currency: 'ETH',
-  explorerUrl: '',
-  rpcUrl: 'https://sepolia-rpc.scroll.io',
+  rpcUrl : 'https://scroll-sepolia.blockpi.network/v1/rpc/public'
 };
-
-const arbitrum = {
-  chainId: 421614,
-  name: 'Arbitrum Sepolia',
+const Arbitrum = {
+  chainId: 421613,
+  name: 'Arbitrum Goerli Testnet',
   currency: 'ETH',
-  explorerUrl: '',
-  rpcUrl: 'https://arbitrum-sepolia.blockpi.network/v1/rpc/public',
+  rpcUrl : 'https://goerli-rollup.arbitrum.io/rpc'
 };
-
-const base = {
-  chainId: 84532,
+const Chiliz = {
+  chainId: 88882,
+  name: 'Chiliz Scoville Testnet',
+  currency: 'CHZ',
+  rpcUrl : 'https://chiliz-spicy.publicnode.com'
+};
+const Base = {
+  chainId: 84531,
   name: 'Base Goerli Testnet',
   currency: 'ETH',
-  explorerUrl: '',
-  rpcUrl: 'https://goerli.base.org',
+  rpcUrl : 'https://base-goerli.diamondswap.org/rpc'
 };
-
 const celo = {
   chainId: 44787,
   name: 'Celo Alfajores Testnet',
   currency: 'CELO',
-  explorerUrl: '',
-  rpcUrl: 'https://alfajores-forno.celo-testnet.org',
+  rpcUrl : 'https://alfajores-forno.celo-testnet.org'
 };
-
-const mantle = {
+const NeonEVM = {
+  chainId: 245022926,
+  name: 'Neon EVM DevNet',
+  currency: 'NEON',
+  rpcUrl : 'https://proxy.devnet.neonlabs.org/solana'
+};
+const Mantle = {
   chainId: 5001,
   name: 'Mantle Testnet',
   currency: 'MNT',
-  explorerUrl: '',
-  rpcUrl: 'https://rpc.testnet.mantle.xyz',
+  rpcUrl : 'https://rpc.testnet.mantle.xyz'
+};
+const linea = {
+  chainId: 59140,
+  name: 'Linea Testnet',
+  currency: 'ETH',
+  rpcUrl : 'https://rpc.goerli.linea.build'
 };
 
 createWeb3Modal({
   ethersConfig: defaultConfig({ metadata }),
-  chains: [polygon, scroll,arbitrum,chiliz,base,celo,mantle], //near, cartesi
+  chains: [zksync, polygonZkEvm, scroll, Arbitrum, Chiliz, Base, celo, NeonEVM,Mantle,linea  ], //near, cartesi
   projectId,
 });
 

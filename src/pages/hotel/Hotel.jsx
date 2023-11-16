@@ -110,7 +110,10 @@ const Hotel = () => {
 
   const checkApproval = async () => {
     try {
-      await isApproved();
+      let value = await isApproved();
+      console.log(value,"this is the value of approval")
+      //set value in status
+
     } catch (error) {
       console.error('Error in isApproved:', error);
       return null;

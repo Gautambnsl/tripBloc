@@ -33,16 +33,22 @@ export async function getRPC() {
 
 //read
 export async function isApproved() {
-  let contractAddress = await getAddress();
-  console.log('contractAddress', contractAddress)
-  const rpc = await getRPC();
-  console.log('rpc', rpc)
-  const provider = new ethers.providers.JsonRpcProvider(rpc);
-  console.log('provider', provider)
-  const contract = new ethers.Contract(contractAddress, abi, provider);
-  console.log('contract', contract)
-  let value = await contract.getProposalInfo(1, 0);
-  console.log(value);
+    try{
+
+        let contractAddress = await getAddress();
+        console.log('contractAddress', contractAddress)
+        const rpc = await getRPC();
+        console.log('rpc', rpc)
+        const provider = new ethers.providers.JsonRpcProvider(rpc);
+        console.log('provider', provider)
+        const contract = new ethers.Contract(contractAddress, abi, provider);
+        console.log('contract', contract)
+        let value = await contract.getProposalInfo(1, 0);
+        console.log("🍌🍌🍌",value[3]);
+    }catch(e){
+        console.log(e)
+        return 3;
+    }
 }
 
 //action

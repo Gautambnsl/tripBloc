@@ -86,7 +86,7 @@ contract TripBloc {
     function sendProposal(uint256 hotelId, uint256 date, uint256 paymentAmount) external payable isValidHotel(hotelId) {
         require(msg.value == paymentAmount, "Incorrect payment amount");
 
-        uint256 proposalId = hotels[hotelId].proposalIds.length; // Unique proposal ID
+        uint256 proposalId = 0;//hotels[hotelId].proposalIds.length; // Unique proposal ID
         hotels[hotelId].proposals[proposalId] = Proposal({
             user: msg.sender,
             date: date,

@@ -1,16 +1,17 @@
 import { Link } from 'react-router-dom';
-import { useContext, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { AuthContext } from '../../context/AuthContext';
 import logoImage from '../../assets/images/lightImage.png';
 import { Box, Modal, Typography } from '@mui/material';
 import { IDKitWidget, useIDKit } from '@worldcoin/idkit';
 import { useAuth0 } from '@auth0/auth0-react';
-import { useWeb3Modal } from '@web3modal/ethers5/react';
+import { useWeb3Modal, useWeb3ModalState } from '@web3modal/ethers5/react';
 
 const Navbar = ({ type }) => {
   const { dispatch } = useContext(AuthContext);
   const [openModal, setOpenModal] = useState(false);
   const { open } = useWeb3Modal();
+  const { selectedNetworkId } = useWeb3ModalState();
   const { loginWithRedirect } = useAuth0();
   // const { open, setOpen } = useIDKit();
 
@@ -18,7 +19,9 @@ const Navbar = ({ type }) => {
     localStorage.getItem('dynamic_authenticated_user') &&
     JSON.parse(localStorage.getItem('dynamic_authenticated_user')).email;
 
-  const lensConnected = JSON.parse(localStorage.getItem('user')) && JSON.parse(localStorage.getItem('user')).email;
+  const lensConnected =
+    JSON.parse(localStorage.getItem('user')) &&
+    JSON.parse(localStorage.getItem('user')).email;
 
   const handleLogout = () => {
     localStorage.clear();
@@ -42,11 +45,27 @@ const Navbar = ({ type }) => {
   };
 
   const connectWithLensProtocol = () => {
-    localStorage.setItem('user', JSON.stringify({
-      name: 'lensprotocol',
-      email: 'dev@gmail.com',
-    }));
+    localStorage.setItem(
+      'user',
+      JSON.stringify({
+        name: 'lensprotocol',
+        email: 'dev@gmail.com',
+      })
+    );
   };
+
+  useEffect(() => {
+    const networkId = localStorage.getItem('selectedNetworkId');
+    if (!networkId && selectedNetworkId) {
+      localStorage.setItem('selectedNetworkId', selectedNetworkId);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (selectedNetworkId) {
+      localStorage.setItem('selectedNetworkId', selectedNetworkId);
+    }
+  }, [selectedNetworkId]);
 
   return (
     <>
@@ -58,7 +77,10 @@ const Navbar = ({ type }) => {
           <div className="navItems">
             {!!dynamicConnected || lensConnected ? (
               <>
-                <button className="navButton-connectWallet" onClick={connectWallet}>
+                <button
+                  className="navButton-connectWallet"
+                  onClick={connectWallet}
+                >
                   Connect Wallet
                 </button>
                 <span>{dynamicConnected || lensConnected}</span>

@@ -1,6 +1,72 @@
 {
-   "1442":{
-       "address":"0x196F2ED79A910c9091BFC41795CfF6D0Fd671c15",
-       "chain" : "1442"
-    }
+  "1442": {
+    "address": "0x196F2ED79A910c9091BFC41795CfF6D0Fd671c15",
+    "chain": "1442",
+    "name": "Polygon zkEVM",
+    "currency": "ETH",
+    "rpcUrl": "https://rpc.public.zkevm-test.net"
+  },
+  "280": {
+    "address": "",
+    "chain": "280",
+    "name": "zksync",
+    "currency": "MNT",
+    "rpcUrl": "https://zksync-era-testnet.blockpi.network/v1/rpc/public"
+  },
+  "534351": {
+    "address": "",
+    "chain": "534351",
+    "name": "Scroll Sepolia Testnet",
+    "currency": "ETH",
+    "rpcUrl": "https://scroll-sepolia.blockpi.network/v1/rpc/public"
+  },
+  "421613": {
+    "address": "",
+    "chain": "421613",
+    "name": "Arbitrum Goerli Testnet",
+    "currency": "ETH",
+    "rpcUrl": "https://goerli-rollup.arbitrum.io/rpc"
+  },
+  "88882": {
+    "address": "",
+    "chain": "88882",
+    "name": "Chiliz Scoville Testnet",
+    "currency": "CHZ",
+    "rpcUrl": "https://chiliz-spicy.publicnode.com"
+  },
+  "84531": {
+    "address": "",
+    "chain": "84531",
+    "name": "Base Goerli Testnet",
+    "currency": "ETH",
+    "rpcUrl": "https://base-goerli.diamondswap.org/rpc"
+  },
+  "44787": {
+    "address": "",
+    "chain": "44787",
+    "name": "Celo Alfajores Testnet",
+    "currency": "CELO",
+    "rpcUrl": "https://alfajores-forno.celo-testnet.org"
+  },
+  "245022926": {
+    "address": "",
+    "chain": "245022926",
+    "name": "Neon EVM DevNet",
+    "currency": "NEON",
+    "rpcUrl": "https://proxy.devnet.neonlabs.org/solana"
+  },
+  "5001": {
+    "address": "",
+    "chain": "5001",
+    "name": "Mantle Testnet",
+    "currency": "ETH",
+    "rpcUrl": "https://rpc.testnet.mantle.xyz"
+  },
+  "59140": {
+    "address": "",
+    "chain": "59140",
+    "name": "Linea Testnet",
+    "currency": "ETH",
+    "rpcUrl": "https://rpc.goerli.linea.build"
+  }
 }

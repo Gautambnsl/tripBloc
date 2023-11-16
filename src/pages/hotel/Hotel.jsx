@@ -8,22 +8,27 @@ import {
   faCircleXmark,
   faLocationDot,
 } from '@fortawesome/free-solid-svg-icons';
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import useFetch from '../../hooks/useFetch';
 import { useLocation } from 'react-router-dom';
 import mockHotels from '../../context/mockHotels';
 import { GateFiDisplayModeEnum, GateFiSDK } from '@gatefi/js-sdk';
 import toast from 'react-hot-toast';
+import jsonData from '../../backendConnectors/data.json';
+import { getAddress, isApproved } from '../../backendConnectors/integration';
 
 const Hotel = () => {
   const location = useLocation();
   const id = location.pathname.split('/')[2];
   const [slideNumber, setSlideNumber] = useState(0);
+  const [status, setStatus] = useState(0);
   const [open, setOpen] = useState(false);
   const [showIframe, setShowIframe] = useState(false);
   const embedInstanceSDK = useRef(null);
   const { loading } = useFetch(`/hotels/find/${id}`);
-  const user = JSON.parse(localStorage.getItem('user')) && JSON.parse(localStorage.getItem('user')).email;
+  const user =
+    JSON.parse(localStorage.getItem('user')) &&
+    JSON.parse(localStorage.getItem('user')).email;
 
   const days = 28;
 
@@ -46,7 +51,7 @@ const Hotel = () => {
   };
 
   const handleClick = () => {
-    if (!user){
+    if (!user) {
       toast('Please Login !!!', {
         icon: '👨‍💻',
       });
@@ -102,6 +107,19 @@ const Hotel = () => {
     embedInstanceSDK.current = null;
     setShowIframe(false);
   };
+
+  const checkApproval = async () => {
+    try {
+      await isApproved();
+    } catch (error) {
+      console.error('Error in isApproved:', error);
+      return null;
+    }
+  };
+
+  useEffect(() => {
+    checkApproval();
+  }, []);
 
   return (
     <>

@@ -16,6 +16,9 @@ import { GateFiDisplayModeEnum, GateFiSDK } from '@gatefi/js-sdk';
 import toast from 'react-hot-toast';
 import { isApproved, sendProposal } from '../../backendConnectors/integration';
 import { useWeb3ModalSigner } from '@web3modal/ethers5/react';
+import { Box, Modal, Typography } from '@mui/material';
+import { createChat } from '../../backendConnectors/push/push2';
+import { ChatUIProvider, ChatView } from '@pushprotocol/uiweb';
 
 const Hotel = () => {
   const location = useLocation();
@@ -23,8 +26,11 @@ const Hotel = () => {
   const [slideNumber, setSlideNumber] = useState(0);
   const [status, setStatus] = useState(2);
   const [open, setOpen] = useState(false);
+  const [openModal, setOpenModal] = useState(false);
   const [showIframe, setShowIframe] = useState(false);
   const embedInstanceSDK = useRef(null);
+  const [chatId, setChatId] = useState(null);
+
   const { loading } = useFetch(`/hotels/find/${id}`);
   const user =
     JSON.parse(localStorage.getItem('user')) &&
@@ -138,111 +144,176 @@ const Hotel = () => {
     }
   };
 
+  const handleClose = () => {
+    setOpenModal(false);
+  };
+
+  const handleChat = async () => {
+    const getChatID = await createChat(signer);
+    setChatId(getChatID?.chatId);
+  };
+
   return (
     <>
-      <Navbar type="list" />
-      <Header type="list" />
-      {loading ? (
-        'loading'
-      ) : (
-        <div className="hotelContainer">
-          {open && (
-            <div className="slider">
-              <FontAwesomeIcon
-                icon={faCircleXmark}
-                className="close"
-                onClick={() => setOpen(false)}
-              />
-              <FontAwesomeIcon
-                icon={faCircleArrowLeft}
-                className="arrow"
-                onClick={() => handleMove('l')}
-              />
-              <div className="sliderWrapper">
-                <img
-                  src={mockHotels[0].photos[slideNumber]}
-                  alt={`Slide ${slideNumber}`}
-                  className="sliderImg"
-                />
-              </div>
-              <FontAwesomeIcon
-                icon={faCircleArrowRight}
-                className="arrow"
-                onClick={() => handleMove('r')}
-              />
-            </div>
-          )}
-          <div
-            id="embed-button"
-            style={{ position: 'absolute', left: '37%', zIndex: '1' }}
-          />
-          {showIframe && (
-            <button
-              onClick={handleCloseEmbed}
-              style={{
-                position: 'absolute',
-                right: '25%',
-                transform: 'none',
-                top: '15%',
-                background: 'rgba(0, 0, 0, 0.7)',
-                color: '#fff',
-                border: 'none',
-                borderRadius: '5px',
-                padding: '5px 15px',
-                cursor: 'pointer',
-                zIndex: 2000,
-                boxShadow: '0 2px 4px rgba(0,0,0,0.2)',
-              }}
-            >
-              Close
-            </button>
-          )}
-          <div className={`hotelWrapper ${showIframe ? 'blurCSS' : null}`}>
-            <button className="bookNow" onClick={handleOnClickEmbed}>
-              Buy via Unlimit Crypto
-            </button>
-            <h1 className="hotelTitle">{mockHotels[0].name}</h1>
-            <div className="hotelAddress">
-              <FontAwesomeIcon icon={faLocationDot} />
-              <span>{mockHotels[0].address}</span>
-            </div>
-            <span className="hotelDistance">
-              Excellent location – {mockHotels[0].distance}m from center
-            </span>
-            <span className="hotelPriceHighlight">
-              Book a stay over ${mockHotels[0].cheapestPrice} at this property
-              and get a free airport taxi
-            </span>
-            <div className="hotelImages">
-              {mockHotels[0].photos?.map((photo, i) => (
-                <div className="hotelImgWrapper" key={i}>
-                  <img
-                    onClick={() => handleOpen(i)}
-                    src={photo}
-                    alt="Hotel Images"
-                    className="hotelImg"
+      {!chatId && (
+        <>
+          <Navbar type="list" />
+          <Header type="list" />
+          {loading ? (
+            'loading'
+          ) : (
+            <div className="hotelContainer">
+              {open && (
+                <div className="slider">
+                  <FontAwesomeIcon
+                    icon={faCircleXmark}
+                    className="close"
+                    onClick={() => setOpen(false)}
+                  />
+                  <FontAwesomeIcon
+                    icon={faCircleArrowLeft}
+                    className="arrow"
+                    onClick={() => handleMove('l')}
+                  />
+                  <div className="sliderWrapper">
+                    <img
+                      src={mockHotels[0].photos[slideNumber]}
+                      alt={`Slide ${slideNumber}`}
+                      className="sliderImg"
+                    />
+                  </div>
+                  <FontAwesomeIcon
+                    icon={faCircleArrowRight}
+                    className="arrow"
+                    onClick={() => handleMove('r')}
                   />
                 </div>
-              ))}
-            </div>
-            <div className="hotelDetails">
-              <div className="hotelDetailsTexts">
-                <h1 className="hotelTitle">{mockHotels[0].title}</h1>
-                <p className="hotelDesc">{mockHotels[0].description}</p>
-              </div>
-              <div className="hotelDetailsPrice">
-                <h1>Perfect for a {days}-night stay!</h1>
-                <span>
-                  Located in the real heart of Krakow, this property has an
-                  excellent location score of 9.8!
+              )}
+              <div
+                id="embed-button"
+                style={{ position: 'absolute', left: '37%', zIndex: '1' }}
+              />
+              {showIframe && (
+                <button
+                  onClick={handleCloseEmbed}
+                  style={{
+                    position: 'absolute',
+                    right: '25%',
+                    transform: 'none',
+                    top: '15%',
+                    background: 'rgba(0, 0, 0, 0.7)',
+                    color: '#fff',
+                    border: 'none',
+                    borderRadius: '5px',
+                    padding: '5px 15px',
+                    cursor: 'pointer',
+                    zIndex: 2000,
+                    boxShadow: '0 2px 4px rgba(0,0,0,0.2)',
+                  }}
+                >
+                  Close
+                </button>
+              )}
+              <div className={`hotelWrapper ${showIframe ? 'blurCSS' : null}`}>
+                <button className="bookNow" onClick={handleOnClickEmbed}>
+                  Buy via Unlimit Crypto
+                </button>
+                <h1 className="hotelTitle">{mockHotels[0].name}</h1>
+                <div className="hotelAddress">
+                  <FontAwesomeIcon icon={faLocationDot} />
+                  <span>{mockHotels[0].address}</span>
+                </div>
+                <span className="hotelDistance">
+                  Excellent location – {mockHotels[0].distance}m from center
                 </span>
-                <h2>
-                  <b>${days * mockHotels[0].cheapestPrice}</b> ({days} nights)
-                </h2>
-                <button onClick={handleClick}>{getButtonStatusText()}</button>
+                <span className="hotelPriceHighlight">
+                  Book a stay over ${mockHotels[0].cheapestPrice} at this
+                  property and get a free airport taxi
+                </span>
+                <div className="hotelImages">
+                  {mockHotels[0].photos?.map((photo, i) => (
+                    <div className="hotelImgWrapper" key={i}>
+                      <img
+                        onClick={() => handleOpen(i)}
+                        src={photo}
+                        alt="Hotel Images"
+                        className="hotelImg"
+                      />
+                    </div>
+                  ))}
+                </div>
+                <div className="hotelDetails">
+                  <div className="hotelDetailsTexts">
+                    <h1 className="hotelTitle">{mockHotels[0].title}</h1>
+                    <p className="hotelDesc">{mockHotels[0].description}</p>
+                  </div>
+                  <div className="hotelDetailsPrice">
+                    <h1>Perfect for a {days}-night stay!</h1>
+                    <span>
+                      Located in the real heart of Krakow, this property has an
+                      excellent location score of 9.8!
+                    </span>
+                    <h2>
+                      <b>${days * mockHotels[0].cheapestPrice}</b> ({days}{' '}
+                      nights)
+                    </h2>
+                    <button onClick={handleClick}>
+                      {getButtonStatusText()}
+                    </button>
+                    <button
+                      disabled={!!!signer}
+                      onClick={() => setOpenModal(true)}
+                    >
+                      Communication
+                    </button>
+                  </div>
+                </div>
               </div>
             </div>
-          </div>
+          )}
+          <Modal open={openModal} onClick={handleClose} className="modal">
+            <Box className="box-style">
+              <Box className="box-flex">
+                <Box className="box-inside-flex" onClick={handleChat}>
+                  <img
+                    src="https://push.org/assets/docs/PushLogoTextDark.svg"
+                    loading="lazy"
+                    alt="Push Protocol"
+                  />
+                  <Typography variant="caption" component="h6">
+                    Communicate with Push Protocol
+                  </Typography>
+                </Box>
+              </Box>
+              <Box className="box-flex">
+                <Box
+                  className="box-inside-flex"
+                  onClick={() => toast.success('Comming Soon')}
+                >
+                  <img
+                    src="https://waku.org/theme/image/logo.svg"
+                    loading="lazy"
+                    alt="Waku Protocol"
+                  />
+                  <Typography variant="caption" component="h6">
+                    Communicate with Waku Protocol
+                  </Typography>
+                </Box>
+              </Box>
+            </Box>
+          </Modal>
+        </>
+      )}
+      {chatId && (
+        <div style={{ height: '75vh', margin: '20px auto' }}>
+          <ChatUIProvider env="staging">
+            <ChatView
+              chatId={chatId}
+              limit={10}
+              isConnected={true}
+              autoConnect={false}
+            />
+          </ChatUIProvider>
         </div>
       )}
     </>

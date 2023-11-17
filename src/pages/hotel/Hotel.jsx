@@ -8,7 +8,7 @@ import {
   faCircleXmark,
   faLocationDot,
 } from '@fortawesome/free-solid-svg-icons';
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import useFetch from '../../hooks/useFetch';
 import { useLocation } from 'react-router-dom';
 import mockHotels from '../../context/mockHotels';
@@ -19,8 +19,22 @@ import { useWeb3ModalSigner } from '@web3modal/ethers5/react';
 import { Box, Modal, Typography } from '@mui/material';
 import { createChat } from '../../backendConnectors/push/push2';
 import { ChatUIProvider, ChatView } from '@pushprotocol/uiweb';
+import protobuf from "protobufjs";
+import {
+  createRelayNode,
+  createDecoder,
+  createEncoder,
+  waitForRemotePeer,
+} from "@waku/sdk";
 
 const Hotel = () => {
+  const ContentTopic = `/js-waku-examples/1/chat/proto`;
+  const Encoder = createEncoder({ contentTopic: ContentTopic });
+  const Decoder = createDecoder(ContentTopic);
+  
+  const SimpleChatMessage = new protobuf.Type("SimpleChatMessage")
+    .add(new protobuf.Field("timestamp", 1, "uint32"))
+    .add(new protobuf.Field("text", 2, "string"));
   const location = useLocation();
   const id = location.pathname.split('/')[2];
   const [slideNumber, setSlideNumber] = useState(0);
@@ -30,6 +44,8 @@ const Hotel = () => {
   const [showIframe, setShowIframe] = useState(false);
   const embedInstanceSDK = useRef(null);
   const [chatId, setChatId] = useState(null);
+  const [waku, setWaku] = useState(undefined);
+  const [messages, setMessages] = useState([]);
 
   const { loading } = useFetch(`/hotels/find/${id}`);
   const user =
@@ -152,6 +168,50 @@ const Hotel = () => {
     const getChatID = await createChat(signer);
     setChatId(getChatID?.chatId);
   };
+
+  const handleWakuSelect = async () => {
+    await initializeWaku();
+    setOpenModal(false); // Close the modal after initializing Waku
+  };
+
+  async function initializeWaku() {
+    if (waku) return;
+
+    const wakuNode = await createRelayNode({ defaultBootstrap: true });
+    await wakuNode.start();
+    await waitForRemotePeer(wakuNode, ["relay"]);
+
+    wakuNode.relay.subscribe(Decoder, (wakuMessage) => {
+      if (!wakuMessage.payload) return;
+      const decodedMessage = SimpleChatMessage.decode(wakuMessage.payload);
+      setMessages((prevMessages) => [
+        { text: decodedMessage.text, timestamp: new Date(decodedMessage.timestamp) },
+        ...prevMessages,
+      ]);
+    });
+
+    setWaku(wakuNode);
+  }
+
+  const sendMessage = async (message) => {
+    if (!waku) return;
+
+    const protoMsg = SimpleChatMessage.create({
+      timestamp: Date.now(),
+      text: message,
+    });
+    console.log('message', message)
+    console.log('protoMsg', protoMsg)
+    const payload = SimpleChatMessage.encode(protoMsg).finish();
+
+    await waku.relay.send(Encoder, { payload });
+  };
+
+  useEffect(() => {
+    initializeWaku();
+  }, [waku]);
+
+  console.log('waku',waku)
 
   return (
     <>
@@ -286,10 +346,7 @@ const Hotel = () => {
                 </Box>
               </Box>
               <Box className="box-flex">
-                <Box
-                  className="box-inside-flex"
-                  onClick={() => toast.success('Comming Soon')}
-                >
+                <Box className="box-inside-flex" onClick={handleWakuSelect}>
                   <img
                     src="https://waku.org/theme/image/logo.svg"
                     loading="lazy"
@@ -303,6 +360,18 @@ const Hotel = () => {
             </Box>
           </Modal>
         </>
+      )}
+      {waku && (
+        <div className="chat-interface">
+          <button onClick={() => sendMessage('Hello from Waku!')}>
+            Send Waku Message
+          </button>
+          <ul>
+            {messages.map((msg, index) => (
+              <li key={index}>{msg.payloadAsUtf8}</li>
+            ))}
+          </ul>
+        </div>
       )}
       {chatId && (
         <div style={{ height: '75vh', margin: '20px auto' }}>

@@ -14,14 +14,14 @@ import { useLocation } from 'react-router-dom';
 import mockHotels from '../../context/mockHotels';
 import { GateFiDisplayModeEnum, GateFiSDK } from '@gatefi/js-sdk';
 import toast from 'react-hot-toast';
-import jsonData from '../../backendConnectors/data.json';
-import { getAddress, isApproved } from '../../backendConnectors/integration';
+import { isApproved, sendProposal } from '../../backendConnectors/integration';
+import { useWeb3ModalSigner } from '@web3modal/ethers5/react';
 
 const Hotel = () => {
   const location = useLocation();
   const id = location.pathname.split('/')[2];
   const [slideNumber, setSlideNumber] = useState(0);
-  const [status, setStatus] = useState(0);
+  const [status, setStatus] = useState(2);
   const [open, setOpen] = useState(false);
   const [showIframe, setShowIframe] = useState(false);
   const embedInstanceSDK = useRef(null);
@@ -29,6 +29,7 @@ const Hotel = () => {
   const user =
     JSON.parse(localStorage.getItem('user')) &&
     JSON.parse(localStorage.getItem('user')).email;
+  const { signer } = useWeb3ModalSigner();
 
   const days = 28;
 
@@ -50,11 +51,13 @@ const Hotel = () => {
     setSlideNumber(newSlideNumber);
   };
 
-  const handleClick = () => {
+  const handleClick = async () => {
     if (!user) {
       toast('Please Login !!!', {
         icon: '👨‍💻',
       });
+    } else {
+      sendProposal(signer);
     }
   };
 
@@ -111,9 +114,7 @@ const Hotel = () => {
   const checkApproval = async () => {
     try {
       let value = await isApproved();
-      console.log(value,"this is the value of approval")
-      //set value in status
-
+      setStatus(value);
     } catch (error) {
       console.error('Error in isApproved:', error);
       return null;
@@ -123,6 +124,19 @@ const Hotel = () => {
   useEffect(() => {
     checkApproval();
   }, []);
+
+  const getButtonStatusText = () => {
+    switch (status) {
+      case 0:
+        return 'Pending Confirmation';
+      case 1:
+        return 'Confirm Booked';
+      case 2:
+        return 'Book Now';
+      default:
+        return 'Book Now';
+    }
+  };
 
   return (
     <>
@@ -225,7 +239,7 @@ const Hotel = () => {
                 <h2>
                   <b>${days * mockHotels[0].cheapestPrice}</b> ({days} nights)
                 </h2>
-                <button onClick={handleClick}>Reserve or Book Now!</button>
+                <button onClick={handleClick}>{getButtonStatusText()}</button>
               </div>
             </div>
           </div>

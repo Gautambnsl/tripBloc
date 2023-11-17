@@ -34,22 +34,17 @@ export async function getRPC() {
 
 //read
 export async function isApproved() {
-    try{
-
-        let contractAddress = await getAddress();
-        console.log('contractAddress', contractAddress)
-        const rpc = await getRPC();
-        console.log('rpc', rpc)
-        const provider = new ethers.providers.JsonRpcProvider(rpc);
-        console.log('provider', provider)
-        const contract = new ethers.Contract(contractAddress, abi, provider);
-        console.log('contract', contract)
-        let value = await contract.getProposalInfo(1, 0);
-        console.log("🍌🍌🍌",value[3]);
-    }catch(e){
-        console.log(e)
-        return 3;
-    }
+  try {
+    let contractAddress = await getAddress();
+    const rpc = await getRPC();
+    const provider = new ethers.providers.JsonRpcProvider(rpc);
+    const contract = new ethers.Contract(contractAddress, abi, provider);
+    let value = await contract.getProposalInfo(1, 0);
+    return value?.status;
+  } catch (e) {
+    console.log(e);
+    return 2;
+  }
 }
 export async function roomPrice() {
     try{
@@ -67,10 +62,10 @@ export async function roomPrice() {
 }
 
 //action
-export async function sendProposal(hotelId, date, payment, signer) {
+export async function sendProposal(signer) {
   let contractAddress = await getAddress();
   const contract = new ethers.Contract(contractAddress, abi, signer);
-  let tx = await contract.sendProposal(hotelId, date, payment, {
+  let tx = await contract.sendProposal(1, 1, '100', {
     value: '100',
   });
 }

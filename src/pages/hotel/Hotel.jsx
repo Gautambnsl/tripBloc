@@ -18,9 +18,22 @@ import { isApproved, sendProposal } from '../../backendConnectors/integration';
 import { useWeb3ModalSigner } from '@web3modal/ethers5/react';
 import { Box, Modal, Typography } from '@mui/material';
 import { createChat } from '../../backendConnectors/push/push2';
-import { ChatUIProvider, ChatView } from '@pushprotocol/uiweb';
+import protobuf from 'protobufjs';
+import {
+  createRelayNode,
+  createDecoder,
+  waitForRemotePeer,
+} from '@waku/sdk';
+import PushUI from './pushUI';
+import WakuUI from './wakuUI';
 
 const Hotel = () => {
+  const ContentTopic = `/js-waku-examples/1/chat/proto`;
+  const Decoder = createDecoder(ContentTopic);
+
+  const SimpleChatMessage = new protobuf.Type('SimpleChatMessage')
+    .add(new protobuf.Field('timestamp', 1, 'uint32'))
+    .add(new protobuf.Field('text', 2, 'string'));
   const location = useLocation();
   const id = location.pathname.split('/')[2];
   const [slideNumber, setSlideNumber] = useState(0);
@@ -30,6 +43,8 @@ const Hotel = () => {
   const [showIframe, setShowIframe] = useState(false);
   const embedInstanceSDK = useRef(null);
   const [chatId, setChatId] = useState(null);
+  const [waku, setWaku] = useState(undefined);
+  const [messages, setMessages] = useState([]);
 
   const { loading } = useFetch(`/hotels/find/${id}`);
   const user =
@@ -127,10 +142,6 @@ const Hotel = () => {
     }
   };
 
-  useEffect(() => {
-    checkApproval();
-  }, []);
-
   const getButtonStatusText = () => {
     switch (status) {
       case 0:
@@ -152,6 +163,37 @@ const Hotel = () => {
     const getChatID = await createChat(signer);
     setChatId(getChatID?.chatId);
   };
+
+  const handleWakuSelect = async () => {
+    await initializeWaku();
+    setOpenModal(false);
+  };
+
+  async function initializeWaku() {
+    if (waku) return;
+
+    const wakuNode = await createRelayNode({ defaultBootstrap: true });
+    await wakuNode.start();
+    await waitForRemotePeer(wakuNode, ['relay']);
+
+    wakuNode.relay.subscribe(Decoder, (wakuMessage) => {
+      if (!wakuMessage.payload) return;
+      const decodedMessage = SimpleChatMessage.decode(wakuMessage.payload);
+      setMessages((prevMessages) => [
+        {
+          text: decodedMessage.text,
+          timestamp: new Date(decodedMessage.timestamp),
+        },
+        ...prevMessages,
+      ]);
+    });
+
+    setWaku(wakuNode);
+  }
+
+  useEffect(() => {
+    checkApproval();
+  }, []);
 
   return (
     <>
@@ -286,10 +328,7 @@ const Hotel = () => {
                 </Box>
               </Box>
               <Box className="box-flex">
-                <Box
-                  className="box-inside-flex"
-                  onClick={() => toast.success('Comming Soon')}
-                >
+                <Box className="box-inside-flex" onClick={handleWakuSelect}>
                   <img
                     src="https://waku.org/theme/image/logo.svg"
                     loading="lazy"
@@ -304,18 +343,8 @@ const Hotel = () => {
           </Modal>
         </>
       )}
-      {chatId && (
-        <div style={{ height: '75vh', margin: '20px auto' }}>
-          <ChatUIProvider env="staging">
-            <ChatView
-              chatId={chatId}
-              limit={10}
-              isConnected={true}
-              autoConnect={false}
-            />
-          </ChatUIProvider>
-        </div>
-      )}
+      {waku && <WakuUI waku={waku} messages={messages} />}
+      {chatId && <PushUI chatId={chatId} />}
     </>
   );
 };

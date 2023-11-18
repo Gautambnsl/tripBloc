@@ -197,7 +197,7 @@ const Hotel = () => {
 
   return (
     <>
-      {!chatId && (
+      {(!chatId || !waku) && (
         <>
           <Navbar type="list" />
           <Header type="list" />

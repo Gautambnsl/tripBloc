@@ -11,16 +11,21 @@ const WakuUI = ({ waku, messages }) => {
     .add(new protobuf.Field('text', 2, 'string'));
 
   const sendMessage = async (message) => {
-    if (!waku) return;
+    try {
+      if (!waku) return;
 
-    const protoMsg = SimpleChatMessage.create({
-      timestamp: Date.now(),
-      text: message,
-    });
-    const payload = SimpleChatMessage.encode(protoMsg).finish();
-
-    await waku.relay.send(Encoder, { payload });
+      const protoMsg = SimpleChatMessage.create({
+        timestamp: Date.now(),
+        text: message,
+      });
+      const payload = SimpleChatMessage?.encode(protoMsg)?.finish();
+      let value = await waku.relay.send(Encoder, { payload });
+      console.log('Message sent', value);
+    } catch (e) {
+      console.log('Send Custom Message');
+    }
   };
+  
   return (
     <>
       <div className="chat-interface">

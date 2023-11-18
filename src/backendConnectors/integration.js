@@ -1,7 +1,7 @@
 import { ethers } from 'ethers';
 import abi from './abi.json';
 import jsonData from './data.json';
-import api3Abi from "./datafeedabi.json"
+import api3Abi from './datafeedabi.json';
 
 async function commonFunction() {
   try {
@@ -33,6 +33,26 @@ export async function getRPC() {
 }
 
 //read
+export async function hotelOwnerAddress() {
+  const provider = new ethers.providers.JsonRpcProvider(
+    'https://rpc.public.zkevm-test.net'
+  );
+  const contract = new ethers.Contract(
+    '0xc9C214a1BA1c266e632C3274B2c2d33422f3963b',
+    abi,
+    provider
+  );
+  let value = await contract.hotels(1);
+  let bool = ethers.utils.isAddress(value[1]);
+  let address;
+  if (!bool) {
+    address = await provider.resolveName(value[1]);
+  } else {
+    address = value[1];
+  }
+  return address;
+}
+
 export async function isApproved() {
   try {
     let contractAddress = await getAddress();
@@ -47,18 +67,18 @@ export async function isApproved() {
   }
 }
 export async function roomPrice() {
-    try{
-        let contractAddress = await getAddress();
-        console.log('contractAddress', contractAddress)
-        const rpc = await getRPC();
-        const provider = new ethers.providers.JsonRpcProvider(rpc);
-        const contract = new ethers.Contract(contractAddress, abi, provider);
-        let value = await contract.hotels(1);
-        console.log("ROOM PRICE",value[3]);
-    }catch(e){
-        console.log(e)
-        return "17999999999999998"
-    }
+  try {
+    let contractAddress = await getAddress();
+    console.log('contractAddress', contractAddress);
+    const rpc = await getRPC();
+    const provider = new ethers.providers.JsonRpcProvider(rpc);
+    const contract = new ethers.Contract(contractAddress, abi, provider);
+    let value = await contract.hotels(1);
+    console.log('ROOM PRICE', value[3]);
+  } catch (e) {
+    console.log(e);
+    return '17999999999999998';
+  }
 }
 
 //action
@@ -71,9 +91,15 @@ export async function sendProposal(signer) {
 }
 
 //api3
-export async function fetchDataFeed(){
-  const provider = new ethers.providers.JsonRpcProvider("https://rpc.public.zkevm-test.net");
-  const contract = new ethers.Contract("0xc9C214a1BA1c266e632C3274B2c2d33422f3963b", api3Abi, provider);
+export async function fetchDataFeed() {
+  const provider = new ethers.providers.JsonRpcProvider(
+    'https://rpc.public.zkevm-test.net'
+  );
+  const contract = new ethers.Contract(
+    '0xc9C214a1BA1c266e632C3274B2c2d33422f3963b',
+    api3Abi,
+    provider
+  );
   let data = await contract.readDataFeed();
-  console.log(data[0])
+  console.log(data[0]);
 }

@@ -89,6 +89,17 @@ export async function sendProposal(signer) {
     value: '100',
   });
 }
+export async function acceptProposal(signer) {
+  let contractAddress = await getAddress();
+  const contract = new ethers.Contract(contractAddress, abi, signer);
+  let tx = await contract.acceptProposal(1,0);
+}
+export async function rejectProposal(signer) {
+  let contractAddress = await getAddress();
+  const contract = new ethers.Contract(contractAddress, abi, signer);
+  let tx = await contract.rejectProposal(1,0);
+
+}
 
 //api3
 export async function fetchDataFeed() {

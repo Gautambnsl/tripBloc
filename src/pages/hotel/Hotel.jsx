@@ -55,8 +55,6 @@ const Hotel = () => {
     JSON.parse(localStorage.getItem('user')).email;
   const { signer } = useWeb3ModalSigner();
 
-  const days = 28;
-
   const handleOpen = (i) => {
     setSlideNumber(i);
     setOpen(true);

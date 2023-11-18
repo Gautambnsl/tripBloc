@@ -14,7 +14,7 @@
     "rpcUrl": "https://zksync-era-testnet.blockpi.network/v1/rpc/public"
   },
   "534351": {
-    "address": "",
+    "address": "0x1Dd6D563ae2A42f186ed30D2135B2B743875561E",
     "chain": "534351",
     "name": "Scroll Sepolia Testnet",
     "currency": "ETH",
@@ -28,28 +28,28 @@
     "rpcUrl": "https://goerli-rollup.arbitrum.io/rpc"
   },
   "88882": {
-    "address": "",
+    "address": "0x1Dd6D563ae2A42f186ed30D2135B2B743875561E",
     "chain": "88882",
     "name": "Chiliz Scoville Testnet",
     "currency": "CHZ",
     "rpcUrl": "https://chiliz-spicy.publicnode.com"
   },
   "84531": {
-    "address": "",
+    "address": "0x1Dd6D563ae2A42f186ed30D2135B2B743875561E",
     "chain": "84531",
     "name": "Base Goerli Testnet",
     "currency": "ETH",
-    "rpcUrl": "https://base-goerli.diamondswap.org/rpc"
+    "rpcUrl": "https://goerli.base.org"
   },
   "44787": {
-    "address": "",
+    "address": "0x1Dd6D563ae2A42f186ed30D2135B2B743875561E",
     "chain": "44787",
     "name": "Celo Alfajores Testnet",
     "currency": "CELO",
     "rpcUrl": "https://alfajores-forno.celo-testnet.org"
   },
   "245022926": {
-    "address": "",
+    "address": "0x1Dd6D563ae2A42f186ed30D2135B2B743875561E",
     "chain": "245022926",
     "name": "Neon EVM DevNet",
     "currency": "NEON",
@@ -63,7 +63,7 @@
     "rpcUrl": "https://rpc.testnet.mantle.xyz"
   },
   "59140": {
-    "address": "",
+    "address": "0x1Dd6D563ae2A42f186ed30D2135B2B743875561E",
     "chain": "59140",
     "name": "Linea Testnet",
     "currency": "ETH",

@@ -4,39 +4,39 @@ const CryptoList = () => {
   const cryptos = [
     {
       name: 'Polygon zkEVM',
-      logo: 'https://www.xceltrip.com/_next/static/media/matic.0e11ecca.png',
+      logo: 'https://storage.googleapis.com/ethglobal-api-production/organizations%2F536ub%2Fimages%2FWhite%20on%20Gradient%20Square.png',
     },
     {
       name: 'zksync',
-      logo: 'https://metaschool.so/_next/static/media/unknown-logo.7eda54b1.webp',
+      logo: 'https://storage.googleapis.com/ethglobal-api-production/organizations%2Fy24y0%2Flogo%2F1682968553958_icon_zkSync_Era_round.svg',
     },
     {
       name: 'Scroll',
-      logo: 'https://metaschool.so/_next/static/media/unknown-logo.7eda54b1.webp',
+      logo: 'https://storage.googleapis.com/ethglobal-api-production/organizations%2Fyip67%2Fimages%2F5122.png',
     },
     {
       name: 'Arbitrum',
-      logo: 'https://icons.llamao.fi/icons/chains/rsz_arbitrum.jpg',
+      logo: 'https://storage.googleapis.com/ethglobal-api-production/organizations%2Fspp1v%2Fimages%2Farbitrum-shield-1.1-aspect-ratio.png',
     },
     {
       name: 'Chiliz',
-      logo: 'https://metaschool.so/_next/static/media/unknown-logo.7eda54b1.webp',
+      logo: 'https://storage.googleapis.com/ethglobal-api-production/organizations%2Fpj01t%2Flogo%2F1696872425081_IIZuBkNS_400x400.jpg',
     },
     {
       name: 'Base',
-      logo: 'https://icons.llamao.fi/icons/chains/rsz_base.jpg',
+      logo: 'https://storage.googleapis.com/ethglobal-api-production/organizations%2Fh5ps8%2Flogo%2F1678294488367_W-9qsu1e_400x400.jpeg',
     },
     {
       name: 'Celo',
-      logo: 'https://icons.llamao.fi/icons/chains/rsz_celo.jpg',
+      logo: 'https://storage.googleapis.com/ethglobal-api-production/organizations%2Finotq%2Flogo%2F1678316332198_InjXBNx9_400x400.jpeg',
     },
     {
       name: 'Neon',
-      logo: 'https://icons.llamao.fi/icons/chains/rsz_neon.jpg',
+      logo: 'https://storage.googleapis.com/ethglobal-api-production/organizations%2F0p5er%2Fimages%2F%D0%BB%D0%BE%D0%B3%D0%BE.png',
     },
     {
       name: 'Mantle',
-      logo: 'https://icons.llamao.fi/icons/chains/rsz_mantle.jpg',
+      logo: 'https://storage.googleapis.com/ethglobal-api-production/organizations%2Fjzpj5%2Flogo%2F1677013312206_Screen%20Shot%202023-02-21%20at%204.01.34%20PM.png',
     },
     {
       name: 'Linea',
@@ -44,31 +44,31 @@ const CryptoList = () => {
     },
     {
       name: 'WorldCoin',
-      logo: 'https://worldcoin.org/icons/logo-small.svg',
+      logo: 'https://storage.googleapis.com/ethglobal-api-production/organizations%2F3zpxc%2Fimages%2Fapple-touch-icon%20(1).png',
     },
     {
       name: 'Lens Protocol',
-      logo: 'https://raw.githubusercontent.com/lens-protocol/brand-kit/074e865b5da4b2b80133915b15e82f9ba1f02881/01%20Logo/SVG/Icon-Black.svg',
+      logo: 'https://storage.googleapis.com/ethglobal-api-production/organizations%2Fvxwti%2Flogo%2F1678645512720_Screen%20Shot%202023-03-12%20at%2011.25.01%20AM.png',
     },
     {
       name: 'Unlimit',
-      logo: 'https://www.unlimit.com/wp-content/themes/unlimint/assets/images/logo_white.svg',
+      logo: 'https://storage.googleapis.com/ethglobal-api-production/organizations%2Fbiwnb%2Flogo%2F1686058413399_nDmyygdt_400x400.jpeg',
     },
     {
       name: 'UMA',
-      logo: 'https://dynamic-assets.coinbase.com/b8b3766b7258165a2ccbb94ef0ca866d9c0a32e5c5a2de17857f617af2147b0ddad2d6515a5c6e5f35ef6a0c2a1e13e382d9755cdc313f5a63ec381e4111bc38/asset_icons/a3067c1067816be8a36697fad879f799afb71e44541aa49837b1a56f98b63ce8.png',
+      logo: 'https://storage.googleapis.com/ethglobal-api-production/organizations%2Ffp1x1%2Flogo%2F1664750381528_uma.jpeg',
     },
     {
       name: 'API3',
-      logo: 'https://s2.coinmarketcap.com/static/img/coins/64x64/7737.png',
+      logo: 'https://storage.googleapis.com/ethglobal-api-production/organizations%2Faa2tg%2Flogo%2F1697461420212_api3twitter.jpeg',
     },
     {
       name: 'Push Protocol',
-      logo: 'https://push.org/assets/docs/PushLogoTextDark.svg',
+      logo: 'https://storage.googleapis.com/ethglobal-api-production/organizations%2F10a1v%2Flogo%2F1664802172170_aiOxYOJI_400x400.jpeg',
     },
     {
       name: 'Waku Protocol',
-      logo: 'https://waku.org/theme/image/logo.svg',
+      logo: 'https://storage.googleapis.com/ethglobal-api-production/organizations%2Fpyhsm%2Flogo%2F1697648764524_waku%20logo.jpeg',
     },
   ];
   return (

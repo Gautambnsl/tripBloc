@@ -306,12 +306,12 @@ const Hotel = () => {
                       </b>
                       (per nights)
                       <br />
-                      <b>
-                        ETH Value =
+                      <span>
+                        ETH Value ={' '}
                         {Number(
                           parseInt(etherumPrice) / 1000000000000000000
                         ).toFixed(2) || 0}
-                      </b>
+                      </span>
                     </h2>
                     <button onClick={handleClick}>
                       {getButtonStatusText()}

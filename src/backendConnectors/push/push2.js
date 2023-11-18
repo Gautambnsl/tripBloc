@@ -16,7 +16,7 @@ export async function createChat(signer) {
   const createTokenGatedGroup = await userAlice.chat.group.create(
     'TripBloc queries',
     {
-      description: 'Secure chat between platform, hotelowner and customer', // provide short description of group
+      description: 'Secure chat between Platform, Hotel Owner and Customer', // provide short description of group
       image: photoEncoded, // provide base64 encoded image
       members: [], // not needed, rules define this, can omit
       admins: [], // not needed as per problem statement, can omit
@@ -52,6 +52,5 @@ export async function createChat(signer) {
     }
   );
 
-  console.log('Chat created successfully!', createTokenGatedGroup);
   return createTokenGatedGroup;
 }

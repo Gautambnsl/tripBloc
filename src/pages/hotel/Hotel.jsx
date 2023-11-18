@@ -171,7 +171,7 @@ const Hotel = () => {
 
   const handleWakuSelect = async () => {
     await initializeWaku();
-    setOpenModal(false); // Close the modal after initializing Waku
+    setOpenModal(false);
   };
 
   async function initializeWaku() {
@@ -202,14 +202,11 @@ const Hotel = () => {
     });
     console.log('message', message)
     console.log('protoMsg', protoMsg)
+    console.log('SimpleChatMessage',SimpleChatMessage.encode(protoMsg).finish())
     const payload = SimpleChatMessage.encode(protoMsg).finish();
 
     await waku.relay.send(Encoder, { payload });
   };
-
-  useEffect(() => {
-    initializeWaku();
-  }, [waku]);
 
   console.log('waku',waku)
 

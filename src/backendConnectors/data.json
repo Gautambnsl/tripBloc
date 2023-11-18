@@ -39,7 +39,7 @@
     "chain": "84531",
     "name": "Base Goerli Testnet",
     "currency": "ETH",
-    "rpcUrl": "https://base-goerli.diamondswap.org/rpc"
+    "rpcUrl": "https://goerli.base.org"
   },
   "44787": {
     "address": "0x1Dd6D563ae2A42f186ed30D2135B2B743875561E",

@@ -8,7 +8,7 @@ import {
   faCircleXmark,
   faLocationDot,
 } from '@fortawesome/free-solid-svg-icons';
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import useFetch from '../../hooks/useFetch';
 import { useLocation } from 'react-router-dom';
 import mockHotels from '../../context/mockHotels';
@@ -18,23 +18,22 @@ import { isApproved, sendProposal } from '../../backendConnectors/integration';
 import { useWeb3ModalSigner } from '@web3modal/ethers5/react';
 import { Box, Modal, Typography } from '@mui/material';
 import { createChat } from '../../backendConnectors/push/push2';
-import { ChatUIProvider, ChatView } from '@pushprotocol/uiweb';
-import protobuf from "protobufjs";
+import protobuf from 'protobufjs';
 import {
   createRelayNode,
   createDecoder,
-  createEncoder,
   waitForRemotePeer,
-} from "@waku/sdk";
+} from '@waku/sdk';
+import PushUI from './pushUI';
+import WakuUI from './wakuUI';
 
 const Hotel = () => {
   const ContentTopic = `/js-waku-examples/1/chat/proto`;
-  const Encoder = createEncoder({ contentTopic: ContentTopic });
   const Decoder = createDecoder(ContentTopic);
-  
-  const SimpleChatMessage = new protobuf.Type("SimpleChatMessage")
-    .add(new protobuf.Field("timestamp", 1, "uint32"))
-    .add(new protobuf.Field("text", 2, "string"));
+
+  const SimpleChatMessage = new protobuf.Type('SimpleChatMessage')
+    .add(new protobuf.Field('timestamp', 1, 'uint32'))
+    .add(new protobuf.Field('text', 2, 'string'));
   const location = useLocation();
   const id = location.pathname.split('/')[2];
   const [slideNumber, setSlideNumber] = useState(0);
@@ -143,10 +142,6 @@ const Hotel = () => {
     }
   };
 
-  useEffect(() => {
-    checkApproval();
-  }, []);
-
   const getButtonStatusText = () => {
     switch (status) {
       case 0:
@@ -179,13 +174,16 @@ const Hotel = () => {
 
     const wakuNode = await createRelayNode({ defaultBootstrap: true });
     await wakuNode.start();
-    await waitForRemotePeer(wakuNode, ["relay"]);
+    await waitForRemotePeer(wakuNode, ['relay']);
 
     wakuNode.relay.subscribe(Decoder, (wakuMessage) => {
       if (!wakuMessage.payload) return;
       const decodedMessage = SimpleChatMessage.decode(wakuMessage.payload);
       setMessages((prevMessages) => [
-        { text: decodedMessage.text, timestamp: new Date(decodedMessage.timestamp) },
+        {
+          text: decodedMessage.text,
+          timestamp: new Date(decodedMessage.timestamp),
+        },
         ...prevMessages,
       ]);
     });
@@ -193,22 +191,9 @@ const Hotel = () => {
     setWaku(wakuNode);
   }
 
-  const sendMessage = async (message) => {
-    if (!waku) return;
-
-    const protoMsg = SimpleChatMessage.create({
-      timestamp: Date.now(),
-      text: message,
-    });
-    console.log('message', message)
-    console.log('protoMsg', protoMsg)
-    console.log('SimpleChatMessage',SimpleChatMessage.encode(protoMsg).finish())
-    const payload = SimpleChatMessage.encode(protoMsg).finish();
-
-    await waku.relay.send(Encoder, { payload });
-  };
-
-  console.log('waku',waku)
+  useEffect(() => {
+    checkApproval();
+  }, []);
 
   return (
     <>
@@ -358,30 +343,8 @@ const Hotel = () => {
           </Modal>
         </>
       )}
-      {waku && (
-        <div className="chat-interface">
-          <button onClick={() => sendMessage('Hello from Waku!')}>
-            Send Waku Message
-          </button>
-          <ul>
-            {messages.map((msg, index) => (
-              <li key={index}>{msg.payloadAsUtf8}</li>
-            ))}
-          </ul>
-        </div>
-      )}
-      {chatId && (
-        <div style={{ height: '75vh', margin: '20px auto' }}>
-          <ChatUIProvider env="staging">
-            <ChatView
-              chatId={chatId}
-              limit={10}
-              isConnected={true}
-              autoConnect={false}
-            />
-          </ChatUIProvider>
-        </div>
-      )}
+      {waku && <WakuUI waku={waku} messages={messages} />}
+      {chatId && <PushUI chatId={chatId} />}
     </>
   );
 };

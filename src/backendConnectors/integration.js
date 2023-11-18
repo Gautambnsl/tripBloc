@@ -70,9 +70,6 @@ export async function sendProposal(signer) {
   });
 }
 
-
-
-
 //api3
 export async function fetchDataFeed(){
   const provider = new ethers.providers.JsonRpcProvider("https://rpc.public.zkevm-test.net");

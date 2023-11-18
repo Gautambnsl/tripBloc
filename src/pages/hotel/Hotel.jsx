@@ -14,7 +14,12 @@ import { useLocation } from 'react-router-dom';
 import mockHotels from '../../context/mockHotels';
 import { GateFiDisplayModeEnum, GateFiSDK } from '@gatefi/js-sdk';
 import toast from 'react-hot-toast';
-import { isApproved, sendProposal } from '../../backendConnectors/integration';
+import {
+  fetchDataFeed,
+  isApproved,
+  roomPrice,
+  sendProposal,
+} from '../../backendConnectors/integration';
 import { useWeb3ModalSigner } from '@web3modal/ethers5/react';
 import { Box, Modal, Typography } from '@mui/material';
 import { createChat } from '../../backendConnectors/push/push2';
@@ -41,6 +46,8 @@ const Hotel = () => {
   const [chatId, setChatId] = useState(null);
   const [waku, setWaku] = useState(undefined);
   const [messages, setMessages] = useState([]);
+  const [etherumPrice, setEtherumPrice] = useState(0);
+  const [roomPriceDemo, setRoomPriceDemo] = useState(0);
 
   const { loading } = useFetch(`/hotels/find/${id}`);
   const user =
@@ -190,8 +197,20 @@ const Hotel = () => {
     setWaku(wakuNode);
   }
 
+  const dataFeed = async () => {
+    let value = await fetchDataFeed();
+    setEtherumPrice(value._hex);
+  };
+
+  const getRoomPrice = async () => {
+    let value = await roomPrice();
+    setRoomPriceDemo(value._hex);
+  };
+
   useEffect(() => {
     checkApproval();
+    dataFeed();
+    getRoomPrice();
   }, []);
 
   return (
@@ -289,14 +308,28 @@ const Hotel = () => {
                     <p className="hotelDesc">{mockHotels[0].description}</p>
                   </div>
                   <div className="hotelDetailsPrice">
-                    <h1>Perfect for a {days}-night stay!</h1>
+                    <h1>Perfect for a per-night stay!</h1>
                     <span>
                       Located in the real heart of Krakow, this property has an
                       excellent location score of 9.8!
                     </span>
                     <h2>
-                      <b>${days * mockHotels[0].cheapestPrice}</b> ({days}{' '}
-                      nights)
+                      <b>
+                        {Number(
+                          parseInt(etherumPrice) / 1000000000000000000
+                        ).toFixed(2) *
+                          Number(
+                            parseInt(roomPriceDemo) / 1000000000000000000
+                          ).toFixed(2) || 0}
+                      </b>
+                      (per nights)
+                      <br />
+                      <b>
+                        ETH Value =
+                        {Number(
+                          parseInt(etherumPrice) / 1000000000000000000
+                        ).toFixed(2) || 0}
+                      </b>
                     </h2>
                     <button onClick={handleClick}>
                       {getButtonStatusText()}

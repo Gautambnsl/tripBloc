@@ -74,7 +74,7 @@ export async function roomPrice() {
     const provider = new ethers.providers.JsonRpcProvider(rpc);
     const contract = new ethers.Contract(contractAddress, abi, provider);
     let value = await contract.hotels(1);
-    console.log('ROOM PRICE', value[3]);
+    return value[3];
   } catch (e) {
     console.log(e);
     return '17999999999999998';
@@ -92,13 +92,13 @@ export async function sendProposal(signer) {
 export async function acceptProposal(signer) {
   let contractAddress = await getAddress();
   const contract = new ethers.Contract(contractAddress, abi, signer);
-  let tx = await contract.acceptProposal(1,0);
+  let tx = await contract.acceptProposal(1, 0);
 }
+
 export async function rejectProposal(signer) {
   let contractAddress = await getAddress();
   const contract = new ethers.Contract(contractAddress, abi, signer);
-  let tx = await contract.rejectProposal(1,0);
-
+  let tx = await contract.rejectProposal(1, 0);
 }
 
 //api3
@@ -112,5 +112,5 @@ export async function fetchDataFeed() {
     provider
   );
   let data = await contract.readDataFeed();
-  console.log(data[0]);
+  return data[0];
 }

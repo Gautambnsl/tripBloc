@@ -26,10 +26,6 @@ const WakuUI = ({ waku, messages }) => {
     }
   };
 
-  const handleInputChange = (event) => {
-    setInputMessage(event.target.value);
-  };
-
   const handleSubmit = () => {
     sendMessage(inputMessage);
     setInputMessage('');
@@ -41,7 +37,7 @@ const WakuUI = ({ waku, messages }) => {
         <input
           type="text"
           value={inputMessage}
-          onChange={handleInputChange}
+          onChange={(e) => setInputMessage(e.target.value)}
           placeholder="Type your message here"
         />
         <button onClick={handleSubmit}>Send Waku Message</button>

@@ -49,7 +49,7 @@
     "rpcUrl": "https://alfajores-forno.celo-testnet.org"
   },
   "245022926": {
-    "address": "",
+    "address": "0x1Dd6D563ae2A42f186ed30D2135B2B743875561E",
     "chain": "245022926",
     "name": "Neon EVM DevNet",
     "currency": "NEON",
@@ -63,7 +63,7 @@
     "rpcUrl": "https://rpc.testnet.mantle.xyz"
   },
   "59140": {
-    "address": "",
+    "address": "0x1Dd6D563ae2A42f186ed30D2135B2B743875561E",
     "chain": "59140",
     "name": "Linea Testnet",
     "currency": "ETH",

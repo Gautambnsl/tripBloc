@@ -4,9 +4,14 @@ import { ChatUIProvider, ChatView } from '@pushprotocol/uiweb';
 
 const RegisterHotel = () => {
   const [inputMessage, setInputMessage] = useState('');
+  const [isPushProtocolConnected, setIsPushProtocolConnected] = useState(false);
 
   const handleInputChange = (event) => {
     setInputMessage(event.target.value);
+  };
+
+  const handlePushChatClick = () => {
+    setIsPushProtocolConnected(true);
   };
 
   return (
@@ -21,17 +26,23 @@ const RegisterHotel = () => {
           onChange={handleInputChange}
           placeholder={localStorage.getItem('chatID') || 'Enter the ChatID'}
         />
-        <button className="register-btn">Push Chat</button>
+        <button className="register-btn" onClick={handlePushChatClick}>
+          Push Chat
+        </button>
         <button className="register-btn">Waku Chat</button>
       </div>
-      <ChatUIProvider env="staging">
-        <ChatView
-          chatId={inputMessage}
-          limit={10}
-          isConnected={true}
-          autoConnect={false}
-        />
-      </ChatUIProvider>
+      {isPushProtocolConnected && (
+        <>
+          <ChatUIProvider env="staging">
+            <ChatView
+              chatId={inputMessage}
+              limit={10}
+              isConnected={isPushProtocolConnected}
+              autoConnect={false}
+            />
+          </ChatUIProvider>
+        </>
+      )}
     </div>
   );
 };

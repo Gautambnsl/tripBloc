@@ -1,9 +1,8 @@
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useContext, useEffect, useState } from 'react';
 import { AuthContext } from '../../context/AuthContext';
 import logoImage from '../../assets/images/lightImage.png';
 import { Box, Modal, Typography } from '@mui/material';
-import { IDKitWidget, useIDKit } from '@worldcoin/idkit';
 import { useAuth0 } from '@auth0/auth0-react';
 import { useWeb3Modal, useWeb3ModalState } from '@web3modal/ethers5/react';
 
@@ -13,7 +12,7 @@ const Navbar = ({ type }) => {
   const { open } = useWeb3Modal();
   const { selectedNetworkId } = useWeb3ModalState();
   const { loginWithRedirect } = useAuth0();
-  // const { open, setOpen } = useIDKit();
+  const navigate = useNavigate();
 
   const dynamicConnected =
     localStorage.getItem('dynamic_authenticated_user') &&
@@ -84,6 +83,12 @@ const Navbar = ({ type }) => {
                   Connect Wallet
                 </button>
                 <span>{dynamicConnected || lensConnected}</span>
+                <button
+                  className="navButton"
+                  onClick={() => navigate('/register')}
+                >
+                  Admin
+                </button>
                 <button className="navButton" onClick={handleLogout}>
                   Log Out
                 </button>
@@ -104,15 +109,6 @@ const Navbar = ({ type }) => {
       <Modal open={openModal} onClick={handleClose} className="modal">
         <Box className="box-style">
           <Box className="box-flex">
-            {/* <IDKitWidget
-                app_id="wid_staging_9f3a190dcfd6bcd9a27f6f88bc31793e"
-                action="vote_1"
-                signal="user_value"
-                onSuccess={() => console.log('success')}
-                credential_types={['phone']}
-                enableTelemetry
-              >
-                {({ open }) => ( */}
             <Box
               className="box-inside-flex"
               onClick={() => loginWithRedirect()}
@@ -126,8 +122,6 @@ const Navbar = ({ type }) => {
                 Connect with your World Coin
               </Typography>
             </Box>
-            {/* )}
-              </IDKitWidget> */}
           </Box>
           <Box className="box-flex">
             <Box className="box-inside-flex" onClick={connectWithLensProtocol}>

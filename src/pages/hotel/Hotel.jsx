@@ -19,11 +19,7 @@ import { useWeb3ModalSigner } from '@web3modal/ethers5/react';
 import { Box, Modal, Typography } from '@mui/material';
 import { createChat } from '../../backendConnectors/push/push2';
 import protobuf from 'protobufjs';
-import {
-  createRelayNode,
-  createDecoder,
-  waitForRemotePeer,
-} from '@waku/sdk';
+import { createLightNode, createDecoder, waitForRemotePeer } from '@waku/sdk';
 import PushUI from './pushUI';
 import WakuUI from './wakuUI';
 
@@ -162,6 +158,7 @@ const Hotel = () => {
   const handleChat = async () => {
     const getChatID = await createChat(signer);
     setChatId(getChatID?.chatId);
+    localStorage.setItem('chatID', getChatID?.chatId);
   };
 
   const handleWakuSelect = async () => {
@@ -172,11 +169,13 @@ const Hotel = () => {
   async function initializeWaku() {
     if (waku) return;
 
-    const wakuNode = await createRelayNode({ defaultBootstrap: true });
+    const wakuNode = await createLightNode({ defaultBootstrap: true });
     await wakuNode.start();
-    await waitForRemotePeer(wakuNode, ['relay']);
+    await waitForRemotePeer(wakuNode);
 
-    wakuNode.relay.subscribe(Decoder, (wakuMessage) => {
+    const subscription = await wakuNode.filter.createSubscription();
+
+    subscription.subscribe(Decoder, (wakuMessage) => {
       if (!wakuMessage.payload) return;
       const decodedMessage = SimpleChatMessage.decode(wakuMessage.payload);
       setMessages((prevMessages) => [

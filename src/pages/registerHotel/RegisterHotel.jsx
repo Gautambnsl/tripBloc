@@ -3,7 +3,7 @@ import './regiterHotel.css';
 import { ChatUIProvider, ChatView } from '@pushprotocol/uiweb';
 
 const RegisterHotel = () => {
-  const [inputMessage, setInputMessage] = useState(localStorage.getItem('chatID'));
+  const [inputMessage, setInputMessage] = useState('');
 
   const handleInputChange = (event) => {
     setInputMessage(event.target.value);
@@ -19,7 +19,7 @@ const RegisterHotel = () => {
           type="text"
           value={inputMessage}
           onChange={handleInputChange}
-          placeholder="Type your message here"
+          placeholder={localStorage.getItem('chatID') || 'Enter the ChatID'}
         />
         <button className="register-btn">Push Chat</button>
         <button className="register-btn">Waku Chat</button>

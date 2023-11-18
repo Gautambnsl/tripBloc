@@ -13,7 +13,7 @@ const Navbar = ({ type }) => {
   const [isMaskNetworkSelected, setIsMaskNetworkSelected] = useState(false);
   const { open } = useWeb3Modal();
   const { selectedNetworkId } = useWeb3ModalState();
-  const { loginWithRedirect } = useAuth0();
+  const { loginWithRedirect, user } = useAuth0();
   const navigate = useNavigate();
 
   const lensConnected =
@@ -86,7 +86,7 @@ const Navbar = ({ type }) => {
             <img src={logoImage} alt="TripBloc Logo" className="logo" />
           </Link>
           <div className="navItems">
-            {lensConnected || maskConnected ? (
+            {lensConnected || maskConnected || user ? (
               <>
                 <button
                   className="navButton-connectWallet"
@@ -105,6 +105,13 @@ const Navbar = ({ type }) => {
                     <span>{maskConnected?.displayName}</span>
                   </>
                 )}
+                <img
+                  src={user?.picture}
+                  alt={user?.name}
+                  loading="lazy"
+                  style={{ width: '30px', height: '30px' }}
+                />
+                <span>{user?.name}</span>
                 <span>{lensConnected}</span>
                 <button
                   className="navButton"

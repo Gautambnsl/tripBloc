@@ -19,22 +19,22 @@ import { useWeb3ModalSigner } from '@web3modal/ethers5/react';
 import { Box, Modal, Typography } from '@mui/material';
 import { createChat } from '../../backendConnectors/push/push2';
 import { ChatUIProvider, ChatView } from '@pushprotocol/uiweb';
-import protobuf from "protobufjs";
+import protobuf from 'protobufjs';
 import {
   createRelayNode,
   createDecoder,
   createEncoder,
   waitForRemotePeer,
-} from "@waku/sdk";
+} from '@waku/sdk';
 
 const Hotel = () => {
   const ContentTopic = `/js-waku-examples/1/chat/proto`;
   const Encoder = createEncoder({ contentTopic: ContentTopic });
   const Decoder = createDecoder(ContentTopic);
-  
-  const SimpleChatMessage = new protobuf.Type("SimpleChatMessage")
-    .add(new protobuf.Field("timestamp", 1, "uint32"))
-    .add(new protobuf.Field("text", 2, "string"));
+
+  const SimpleChatMessage = new protobuf.Type('SimpleChatMessage')
+    .add(new protobuf.Field('timestamp', 1, 'uint32'))
+    .add(new protobuf.Field('text', 2, 'string'));
   const location = useLocation();
   const id = location.pathname.split('/')[2];
   const [slideNumber, setSlideNumber] = useState(0);
@@ -47,91 +47,91 @@ const Hotel = () => {
   const [waku, setWaku] = useState(undefined);
   const [messages, setMessages] = useState([]);
 
-  const { loading } = useFetch(`/hotels/find/${id}`);
-  const user =
-    JSON.parse(localStorage.getItem('user')) &&
-    JSON.parse(localStorage.getItem('user')).email;
+  // const { loading } = useFetch(`/hotels/find/${id}`);
+  // const user =
+  //   JSON.parse(localStorage.getItem('user')) &&
+  //   JSON.parse(localStorage.getItem('user')).email;
   const { signer } = useWeb3ModalSigner();
 
-  const days = 28;
+  // const days = 28;
 
-  const handleOpen = (i) => {
-    setSlideNumber(i);
-    setOpen(true);
-  };
+  // const handleOpen = (i) => {
+  //   setSlideNumber(i);
+  //   setOpen(true);
+  // };
 
-  const handleMove = (direction) => {
-    let newSlideNumber;
-    const totalImages = mockHotels[0].photos.length;
+  // const handleMove = (direction) => {
+  //   let newSlideNumber;
+  //   const totalImages = mockHotels[0].photos.length;
 
-    if (direction === 'l') {
-      newSlideNumber = slideNumber === 0 ? totalImages - 1 : slideNumber - 1;
-    } else {
-      newSlideNumber = slideNumber === totalImages - 1 ? 0 : slideNumber + 1;
-    }
+  //   if (direction === 'l') {
+  //     newSlideNumber = slideNumber === 0 ? totalImages - 1 : slideNumber - 1;
+  //   } else {
+  //     newSlideNumber = slideNumber === totalImages - 1 ? 0 : slideNumber + 1;
+  //   }
 
-    setSlideNumber(newSlideNumber);
-  };
+  //   setSlideNumber(newSlideNumber);
+  // };
 
-  const handleClick = async () => {
-    if (!user) {
-      toast('Please Login !!!', {
-        icon: '👨‍💻',
-      });
-    } else {
-      sendProposal(signer);
-    }
-  };
+  // const handleClick = async () => {
+  //   if (!user) {
+  //     toast('Please Login !!!', {
+  //       icon: '👨‍💻',
+  //     });
+  //   } else {
+  //     sendProposal(signer);
+  //   }
+  // };
 
-  const generateRandomHex = (size) => {
-    let result = '';
-    for (let i = 0; i < size; i++) {
-      result += Math.floor(Math.random() * 16).toString(16);
-    }
-    return result;
-  };
+  // const generateRandomHex = (size) => {
+  //   let result = '';
+  //   for (let i = 0; i < size; i++) {
+  //     result += Math.floor(Math.random() * 16).toString(16);
+  //   }
+  //   return result;
+  // };
 
-  const createEmbedSdkInstance = () => {
-    const randomString = generateRandomHex(64);
+  // const createEmbedSdkInstance = () => {
+  //   const randomString = generateRandomHex(64);
 
-    embedInstanceSDK.current =
-      typeof document !== 'undefined' &&
-      new GateFiSDK({
-        merchantId: '9e34f479-b43a-4372-8bdf-90689e16cd5b',
-        displayMode: GateFiDisplayModeEnum.Embedded,
-        nodeSelector: '#embed-button',
-        isSandbox: true,
-        walletAddress: '0xe8A9c115d575586FC42fD2d046FB7535e06E7c5F',
-        email: 'agujarati.010@gmail.com',
-        externalId: randomString,
-        defaultFiat: {
-          currency: 'USD',
-          amount: '20.51',
-        },
-        defaultCrypto: {
-          currency: 'ETH',
-        },
-      });
-  };
+  //   embedInstanceSDK.current =
+  //     typeof document !== 'undefined' &&
+  //     new GateFiSDK({
+  //       merchantId: '9e34f479-b43a-4372-8bdf-90689e16cd5b',
+  //       displayMode: GateFiDisplayModeEnum.Embedded,
+  //       nodeSelector: '#embed-button',
+  //       isSandbox: true,
+  //       walletAddress: '0xe8A9c115d575586FC42fD2d046FB7535e06E7c5F',
+  //       email: 'agujarati.010@gmail.com',
+  //       externalId: randomString,
+  //       defaultFiat: {
+  //         currency: 'USD',
+  //         amount: '20.51',
+  //       },
+  //       defaultCrypto: {
+  //         currency: 'ETH',
+  //       },
+  //     });
+  // };
 
-  const handleOnClickEmbed = () => {
-    if (showIframe) {
-      embedInstanceSDK.current?.hide();
-      setShowIframe(false);
-    } else {
-      if (!embedInstanceSDK.current) {
-        createEmbedSdkInstance();
-      }
-      embedInstanceSDK.current?.show();
-      setShowIframe(true);
-    }
-  };
+  // const handleOnClickEmbed = () => {
+  //   if (showIframe) {
+  //     embedInstanceSDK.current?.hide();
+  //     setShowIframe(false);
+  //   } else {
+  //     if (!embedInstanceSDK.current) {
+  //       createEmbedSdkInstance();
+  //     }
+  //     embedInstanceSDK.current?.show();
+  //     setShowIframe(true);
+  //   }
+  // };
 
-  const handleCloseEmbed = () => {
-    embedInstanceSDK.current?.destroy();
-    embedInstanceSDK.current = null;
-    setShowIframe(false);
-  };
+  // const handleCloseEmbed = () => {
+  //   embedInstanceSDK.current?.destroy();
+  //   embedInstanceSDK.current = null;
+  //   setShowIframe(false);
+  // };
 
   const checkApproval = async () => {
     try {
@@ -147,18 +147,18 @@ const Hotel = () => {
     checkApproval();
   }, []);
 
-  const getButtonStatusText = () => {
-    switch (status) {
-      case 0:
-        return 'Pending Confirmation';
-      case 1:
-        return 'Confirm Booked';
-      case 2:
-        return 'Book Now';
-      default:
-        return 'Book Now';
-    }
-  };
+  // const getButtonStatusText = () => {
+  //   switch (status) {
+  //     case 0:
+  //       return 'Pending Confirmation';
+  //     case 1:
+  //       return 'Confirm Booked';
+  //     case 2:
+  //       return 'Book Now';
+  //     default:
+  //       return 'Book Now';
+  //   }
+  // };
 
   const handleClose = () => {
     setOpenModal(false);
@@ -179,13 +179,16 @@ const Hotel = () => {
 
     const wakuNode = await createRelayNode({ defaultBootstrap: true });
     await wakuNode.start();
-    await waitForRemotePeer(wakuNode, ["relay"]);
+    await waitForRemotePeer(wakuNode, ['relay']);
 
     wakuNode.relay.subscribe(Decoder, (wakuMessage) => {
       if (!wakuMessage.payload) return;
       const decodedMessage = SimpleChatMessage.decode(wakuMessage.payload);
       setMessages((prevMessages) => [
-        { text: decodedMessage.text, timestamp: new Date(decodedMessage.timestamp) },
+        {
+          text: decodedMessage.text,
+          timestamp: new Date(decodedMessage.timestamp),
+        },
         ...prevMessages,
       ]);
     });
@@ -200,23 +203,25 @@ const Hotel = () => {
       timestamp: Date.now(),
       text: message,
     });
-    console.log('message', message)
-    console.log('protoMsg', protoMsg)
-    console.log('SimpleChatMessage',SimpleChatMessage.encode(protoMsg).finish())
-    const payload = SimpleChatMessage.encode(protoMsg).finish();
+    console.log('message', message);
+    console.log('protoMsg', protoMsg);
+    console.log(
+      'SimpleChatMessage',
+      SimpleChatMessage.encode(protoMsg).finish()
+    );
+    const payload = SimpleChatMessage?.encode(protoMsg)?.finish();
+    console.log('payload', payload);
 
     await waku.relay.send(Encoder, { payload });
   };
 
-  console.log('waku',waku)
-
   return (
     <>
-      {!chatId && (
+      {(!chatId || !waku) && (
         <>
-          <Navbar type="list" />
-          <Header type="list" />
-          {loading ? (
+          {/* <Navbar type="list" /> */}
+          {/* <Header type="list" /> */}
+          {/* {loading ? (
             'loading'
           ) : (
             <div className="hotelContainer">
@@ -253,20 +258,7 @@ const Hotel = () => {
               {showIframe && (
                 <button
                   onClick={handleCloseEmbed}
-                  style={{
-                    position: 'absolute',
-                    right: '25%',
-                    transform: 'none',
-                    top: '15%',
-                    background: 'rgba(0, 0, 0, 0.7)',
-                    color: '#fff',
-                    border: 'none',
-                    borderRadius: '5px',
-                    padding: '5px 15px',
-                    cursor: 'pointer',
-                    zIndex: 2000,
-                    boxShadow: '0 2px 4px rgba(0,0,0,0.2)',
-                  }}
+                  className='close-btn'
                 >
                   Close
                 </button>
@@ -327,7 +319,8 @@ const Hotel = () => {
                 </div>
               </div>
             </div>
-          )}
+          )} */}
+          <button onClick={() => setOpenModal(true)}>Communication</button>
           <Modal open={openModal} onClick={handleClose} className="modal">
             <Box className="box-style">
               <Box className="box-flex">

@@ -213,7 +213,7 @@ const Hotel = () => {
 
   return (
     <>
-      {(!chatId || !waku) && (
+      {!chatId || !waku ? (
         <>
           <Navbar type="list" />
           <Header type="list" />
@@ -252,23 +252,7 @@ const Hotel = () => {
                 style={{ position: 'absolute', left: '37%', zIndex: '1' }}
               />
               {showIframe && (
-                <button
-                  onClick={handleCloseEmbed}
-                  style={{
-                    position: 'absolute',
-                    right: '25%',
-                    transform: 'none',
-                    top: '15%',
-                    background: 'rgba(0, 0, 0, 0.7)',
-                    color: '#fff',
-                    border: 'none',
-                    borderRadius: '5px',
-                    padding: '5px 15px',
-                    cursor: 'pointer',
-                    zIndex: 2000,
-                    boxShadow: '0 2px 4px rgba(0,0,0,0.2)',
-                  }}
-                >
+                <button onClick={handleCloseEmbed} className="close-btn">
                   Close
                 </button>
               )}
@@ -348,7 +332,7 @@ const Hotel = () => {
               <Box className="box-flex">
                 <Box className="box-inside-flex" onClick={handleChat}>
                   <img
-                    src="https://push.org/assets/docs/PushLogoTextDark.svg"
+                    src="https://storage.googleapis.com/ethglobal-api-production/organizations%2F10a1v%2Flogo%2F1664802172170_aiOxYOJI_400x400.jpeg"
                     loading="lazy"
                     alt="Push Protocol"
                   />
@@ -360,7 +344,7 @@ const Hotel = () => {
               <Box className="box-flex">
                 <Box className="box-inside-flex" onClick={handleWakuSelect}>
                   <img
-                    src="https://waku.org/theme/image/logo.svg"
+                    src="https://storage.googleapis.com/ethglobal-api-production/organizations%2Fpyhsm%2Flogo%2F1697648764524_waku%20logo.jpeg"
                     loading="lazy"
                     alt="Waku Protocol"
                   />
@@ -372,7 +356,7 @@ const Hotel = () => {
             </Box>
           </Modal>
         </>
-      )}
+      ) : null}
       {waku && <WakuUI waku={waku} messages={messages} />}
       {chatId && <PushUI chatId={chatId} />}
     </>

@@ -9,18 +9,18 @@ import { useWeb3Modal, useWeb3ModalState } from '@web3modal/ethers5/react';
 const Navbar = ({ type }) => {
   const { dispatch } = useContext(AuthContext);
   const [openModal, setOpenModal] = useState(false);
+  const [maskInputData, setMaskInputData] = useState('');
+  const [isMaskNetworkSelected, setIsMaskNetworkSelected] = useState(false);
   const { open } = useWeb3Modal();
   const { selectedNetworkId } = useWeb3ModalState();
   const { loginWithRedirect } = useAuth0();
   const navigate = useNavigate();
 
-  const dynamicConnected =
-    localStorage.getItem('dynamic_authenticated_user') &&
-    JSON.parse(localStorage.getItem('dynamic_authenticated_user')).email;
-
   const lensConnected =
     JSON.parse(localStorage.getItem('user')) &&
     JSON.parse(localStorage.getItem('user')).email;
+
+  const maskConnected = JSON.parse(localStorage.getItem('userData'));
 
   const handleLogout = () => {
     localStorage.clear();
@@ -35,12 +35,6 @@ const Navbar = ({ type }) => {
 
   const handleClose = () => {
     setOpenModal(false);
-    dispatch({ type: 'LOGIN_START' });
-    dispatch({
-      type: 'LOGIN_SUCCESS',
-      name: dynamicConnected,
-      loginWith: 'Dynamic',
-    });
   };
 
   const connectWithLensProtocol = () => {
@@ -66,6 +60,24 @@ const Navbar = ({ type }) => {
     }
   }, [selectedNetworkId]);
 
+  const handleMaskNetworkSelect = () => {
+    setIsMaskNetworkSelected(true);
+  };
+
+  const handleMaskSubmit = async () => {
+    try {
+      const response = await fetch(
+        `https://api.web3.bio/profile/ens/${maskInputData}`
+      );
+      const data = await response.json();
+      const { displayName, avatar } = data;
+      localStorage.setItem('userData', JSON.stringify({ displayName, avatar }));
+      console.log('API Response:', data);
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    }
+  };
+
   return (
     <>
       <div className={type !== 'list' ? 'navbar' : 'navbar-list'}>
@@ -74,7 +86,7 @@ const Navbar = ({ type }) => {
             <img src={logoImage} alt="TripBloc Logo" className="logo" />
           </Link>
           <div className="navItems">
-            {!!dynamicConnected || lensConnected ? (
+            {lensConnected || maskConnected ? (
               <>
                 <button
                   className="navButton-connectWallet"
@@ -82,7 +94,18 @@ const Navbar = ({ type }) => {
                 >
                   Connect Wallet
                 </button>
-                <span>{dynamicConnected || lensConnected}</span>
+                {maskConnected && (
+                  <>
+                    <img
+                      src={maskConnected?.avatar}
+                      alt={maskConnected?.displayName}
+                      loading="lazy"
+                      style={{ width: '30px', height: '30px' }}
+                    />
+                    <span>{maskConnected?.displayName}</span>
+                  </>
+                )}
+                <span>{lensConnected}</span>
                 <button
                   className="navButton"
                   onClick={() => navigate('/register')}
@@ -114,7 +137,7 @@ const Navbar = ({ type }) => {
               onClick={() => loginWithRedirect()}
             >
               <img
-                src="https://worldcoin.org/icons/logo-small.svg"
+                src="https://storage.googleapis.com/ethglobal-api-production/organizations%2F3zpxc%2Fimages%2Fapple-touch-icon%20(1).png"
                 loading="lazy"
                 alt="World Coin"
               />
@@ -126,7 +149,7 @@ const Navbar = ({ type }) => {
           <Box className="box-flex">
             <Box className="box-inside-flex" onClick={connectWithLensProtocol}>
               <img
-                src="https://raw.githubusercontent.com/lens-protocol/brand-kit/074e865b5da4b2b80133915b15e82f9ba1f02881/01%20Logo/SVG/Icon-Black.svg"
+                src="https://storage.googleapis.com/ethglobal-api-production/organizations%2Fvxwti%2Flogo%2F1678645512720_Screen%20Shot%202023-03-12%20at%2011.25.01%20AM.png"
                 loading="lazy"
                 alt="Lens Protocol"
               />
@@ -135,6 +158,29 @@ const Navbar = ({ type }) => {
               </Typography>
             </Box>
           </Box>
+          <Box className="box-flex">
+            <Box className="box-inside-flex" onClick={handleMaskNetworkSelect}>
+              <img
+                src="https://storage.googleapis.com/ethglobal-api-production/organizations%2Fpn953%2Flogo%2F1680188467903_aVevg5nN_400x400.jpeg"
+                loading="lazy"
+                alt="Mask Network"
+              />
+              <Typography variant="caption" component="h6">
+                Connect with your Mask Network
+              </Typography>
+            </Box>
+          </Box>
+          {isMaskNetworkSelected && (
+            <Box className="input-section">
+              <input
+                type="text"
+                value={maskInputData}
+                onChange={(e) => setMaskInputData(e.target.value)}
+                placeholder="Enter Mask Network data"
+              />
+              <button onClick={handleMaskSubmit}>Submit</button>
+            </Box>
+          )}
         </Box>
       </Modal>
     </>

@@ -25,6 +25,7 @@ import {
   createDecoder,
   createEncoder,
   waitForRemotePeer,
+  createLightNode,
 } from '@waku/sdk';
 
 const Hotel = () => {
@@ -177,13 +178,16 @@ const Hotel = () => {
   async function initializeWaku() {
     if (waku) return;
 
-    const wakuNode = await createRelayNode({ defaultBootstrap: true });
+    const wakuNode = await createLightNode({ defaultBootstrap: true });
     await wakuNode.start();
-    await waitForRemotePeer(wakuNode, ['relay']);
+    await waitForRemotePeer(wakuNode);
 
-    wakuNode.relay.subscribe(Decoder, (wakuMessage) => {
+    const subscription = await wakuNode.filter.createSubscription();
+
+    subscription.subscribe(Decoder, (wakuMessage) => {
       if (!wakuMessage.payload) return;
       const decodedMessage = SimpleChatMessage.decode(wakuMessage.payload);
+      console.log('decodedMessage', decodedMessage.text);
       setMessages((prevMessages) => [
         {
           text: decodedMessage.text,
@@ -196,30 +200,30 @@ const Hotel = () => {
     setWaku(wakuNode);
   }
 
+  console.log('message', messages);
+
   const sendMessage = async (message) => {
-
-    try{
-
+    try {
       if (!waku) return;
-      
-    const protoMsg = SimpleChatMessage.create({
-      timestamp: Date.now(),
-      text: message,
-    });
-    console.log('message', message);
-    console.log('protoMsg', protoMsg);
-    console.log(
-      'SimpleChatMessage',
-      SimpleChatMessage.encode(protoMsg).finish()
-    );
-    const payload = SimpleChatMessage?.encode(protoMsg)?.finish();
-    console.log('payload', payload);
 
-    let value = await waku.relay.send(Encoder, { payload });
-    console.log(value,"msg sent")
-  }catch(e){
-    console.log("send msg custom");
-  }
+      const protoMsg = SimpleChatMessage.create({
+        timestamp: Date.now(),
+        text: message,
+      });
+      console.log('message', message);
+      console.log('protoMsg', protoMsg);
+      console.log(
+        'SimpleChatMessage',
+        SimpleChatMessage.encode(protoMsg).finish()
+      );
+      const payload = SimpleChatMessage?.encode(protoMsg)?.finish();
+      console.log('payload', payload);
+
+      let value = await waku.lightPush.send(Encoder, { payload });
+      console.log(value, 'msg sent');
+    } catch (e) {
+      console.log('send msg custom');
+    }
   };
 
   return (
@@ -365,7 +369,9 @@ const Hotel = () => {
           </button>
           <ul>
             {messages.map((msg, index) => (
-              <li key={index}>{msg.payloadAsUtf8}</li>
+              <li key={index}>
+                {msg.text}
+              </li>
             ))}
           </ul>
         </div>

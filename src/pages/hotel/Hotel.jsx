@@ -197,8 +197,11 @@ const Hotel = () => {
   }
 
   const sendMessage = async (message) => {
-    if (!waku) return;
 
+    try{
+
+      if (!waku) return;
+      
     const protoMsg = SimpleChatMessage.create({
       timestamp: Date.now(),
       text: message,
@@ -212,7 +215,11 @@ const Hotel = () => {
     const payload = SimpleChatMessage?.encode(protoMsg)?.finish();
     console.log('payload', payload);
 
-    await waku.relay.send(Encoder, { payload });
+    let value = await waku.relay.send(Encoder, { payload });
+    console.log(value,"msg sent")
+  }catch(e){
+    console.log("send msg custom");
+  }
   };
 
   return (

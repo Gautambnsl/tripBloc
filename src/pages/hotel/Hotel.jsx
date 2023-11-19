@@ -317,7 +317,7 @@ const Hotel = () => {
                             parseInt(roomPriceDemo) / 1000000000000000000
                           ).toFixed(2) || 0}
                       </b>
-                      (per nights)
+                      $ (per night)
                       <br />
                       <span>
                         ETH Value ={' '}

@@ -4,7 +4,13 @@ import { AuthContext } from '../../context/AuthContext';
 import logoImage from '../../assets/images/lightImage.png';
 import { Box, Modal, Typography } from '@mui/material';
 import { useAuth0 } from '@auth0/auth0-react';
-import { useWeb3Modal, useWeb3ModalState } from '@web3modal/ethers5/react';
+import {
+  useWeb3Modal,
+  useWeb3ModalAccount,
+  useWeb3ModalState,
+} from '@web3modal/ethers5/react';
+import { SignInWithLens } from '@lens-protocol/widgets-react';
+import { nextIDAuth } from '../../backendConnectors/integration';
 
 const Navbar = ({ type }) => {
   const { dispatch } = useContext(AuthContext);
@@ -15,6 +21,7 @@ const Navbar = ({ type }) => {
   const { selectedNetworkId } = useWeb3ModalState();
   const { loginWithRedirect, user } = useAuth0();
   const navigate = useNavigate();
+  const { address } = useWeb3ModalAccount();
 
   const lensConnected =
     JSON.parse(localStorage.getItem('user')) &&
@@ -25,7 +32,6 @@ const Navbar = ({ type }) => {
   const handleLogout = () => {
     localStorage.clear();
     sessionStorage.clear();
-    window.location.reload();
     dispatch({ type: 'LOGOUT' });
   };
 
@@ -37,7 +43,7 @@ const Navbar = ({ type }) => {
     setOpenModal(false);
   };
 
-  const connectWithLensProtocol = () => {
+  const connectWithSkip = () => {
     localStorage.setItem(
       'user',
       JSON.stringify({
@@ -66,17 +72,31 @@ const Navbar = ({ type }) => {
 
   const handleMaskSubmit = async () => {
     try {
+      const authAddress = await nextIDAuth(maskInputData);
+
       const response = await fetch(
         `https://api.web3.bio/profile/ens/${maskInputData}`
       );
       const data = await response.json();
       const { displayName, avatar } = data;
-      localStorage.setItem('userData', JSON.stringify({ displayName, avatar }));
+      localStorage.setItem(
+        'userData',
+        JSON.stringify({ displayName, avatar, address })
+      );
       console.log('API Response:', data);
+      if (data?.address !== address) {
+        handleLogout();
+        alert('UserID does not belong to you, Mask Authentication Failed!!');
+      }
     } catch (error) {
       console.error('Error fetching data:', error);
     }
   };
+
+  async function onSignIn(tokens, profile) {
+    console.log('tokens: ', tokens);
+    console.log('profile: ', profile);
+  }
 
   return (
     <>
@@ -105,13 +125,17 @@ const Navbar = ({ type }) => {
                     <span>{maskConnected?.displayName}</span>
                   </>
                 )}
-                <img
-                  src={user?.picture}
-                  alt={user?.name}
-                  loading="lazy"
-                  style={{ width: '30px', height: '30px' }}
-                />
-                <span>{user?.name}</span>
+                {user && (
+                  <>
+                    <img
+                      src={user?.picture}
+                      alt={user?.name}
+                      loading="lazy"
+                      style={{ width: '30px', height: '30px' }}
+                    />
+                    <span>{user?.name}</span>
+                  </>
+                )}
                 <span>{lensConnected}</span>
                 <button
                   className="navButton"
@@ -154,12 +178,8 @@ const Navbar = ({ type }) => {
             </Box>
           </Box>
           <Box className="box-flex">
-            <Box className="box-inside-flex" onClick={connectWithLensProtocol}>
-              <img
-                src="https://storage.googleapis.com/ethglobal-api-production/organizations%2Fvxwti%2Flogo%2F1678645512720_Screen%20Shot%202023-03-12%20at%2011.25.01%20AM.png"
-                loading="lazy"
-                alt="Lens Protocol"
-              />
+            <Box className="box-inside-flex">
+              <SignInWithLens onSignIn={onSignIn} />
               <Typography variant="caption" component="h6">
                 Connect with Lens Protocol
               </Typography>
@@ -174,6 +194,13 @@ const Navbar = ({ type }) => {
               />
               <Typography variant="caption" component="h6">
                 Connect with your Mask Network
+              </Typography>
+            </Box>
+          </Box>
+          <Box className="box-flex">
+            <Box className="box-inside-flex" onClick={connectWithSkip}>
+              <Typography variant="caption" component="h6">
+                Skip
               </Typography>
             </Box>
           </Box>

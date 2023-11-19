@@ -53,6 +53,16 @@ export async function hotelOwnerAddress() {
   return address;
 }
 
+export async function nextIDAuth(devAuth) {
+  try {
+    const provider = ethers.getDefaultProvider()
+    let address = await provider.resolveName(devAuth);
+    return address;
+  } catch (e) {
+    console.log('Valid Mask Authentication Failed', e);
+  }
+}
+
 export async function isApproved() {
   try {
     let contractAddress = await getAddress();

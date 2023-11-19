@@ -353,6 +353,13 @@ const Hotel = () => {
                   </Typography>
                 </Box>
               </Box>
+              <Box className="box-flex">
+                <Box className="box-inside-flex">
+                  <Typography variant="caption" component="h6">
+                    Web3Inbox
+                  </Typography>
+                </Box>
+              </Box>
             </Box>
           </Modal>
         </>

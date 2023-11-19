@@ -19,6 +19,7 @@
     "@pushprotocol/restapi": "^1.4.33",
     "@pushprotocol/uiweb": "^1.1.19",
     "@waku/sdk": "^0.0.18",
+    "@walletconnect/notify-client": "^0.14.4",
     "@web3inbox/core": "^0.0.22",
     "@web3inbox/widget-react": "^0.6.25",
     "@web3modal/ethereum": "^2.7.1",
